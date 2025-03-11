@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Room";
+}
+<div class="text-center">
+    <h1 class="display-4">Room</h1>
+    <p>Available Rooms</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Type</th>
+                <th>Capacity</th>
+                <th>Floor Number</th>
+                <th>Building</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Room room in Model)
+                {
+                    <tr>
+                        <td>@room.roomType</td>
+                        <td>@room.capacity</td>
+                        <td>@room.floorNumber</td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
