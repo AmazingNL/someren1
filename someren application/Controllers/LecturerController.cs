@@ -11,14 +11,7 @@ namespace someren_application.Controllers
 
         private ILecturerRepository _lecturerRpository;
 
-        //public UsersController(IUsersRepository DbUsersRepository)
-        //{   
-
-
-        //    //ideallly via injection 
-        //    // userRepository = userRepository;
-        //    _usersRepository = new DbUsersRepository();
-        //}
+       
         public LecturerController(ILecturerRepository lecturerRpository)
 
         {
@@ -28,7 +21,7 @@ namespace someren_application.Controllers
 
         public IActionResult Index()
         {
-            //get All users repstory
+            //get All lecturer repstory
             List<Lecturer> lecturers = _lecturerRpository.GetAll();
             return View(lecturers);
 

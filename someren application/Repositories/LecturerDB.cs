@@ -11,7 +11,7 @@ namespace someren_application.Repositories
         // Constructor gets connection string from appsettings.json
         public LecturerDB(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("SomerenConnection");
         }
         public List<Lecturer> GetAll()
         {
@@ -21,7 +21,7 @@ namespace someren_application.Repositories
             //below code must be re-factored to a seperate private method
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "Select LecturerName,  MobileNumber, EmailAddress from Lecturers";
+                string query = "Select * FROM [lecturer]";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
@@ -31,13 +31,13 @@ namespace someren_application.Repositories
                         while (reader.Read())
                         {
                             Lecturer lecturer = new Lecturer(
-                                reader["FirstName"].ToString(),
-                                reader["LastName"].ToString(),
-                                reader["Telephone"].ToString(),
-                                Convert.ToInt32(reader["Age"])
+                                reader["firstName"].ToString(),
+                                reader["lastName"].ToString(),
+                                reader["telephone"].ToString(), 
+                                Convert.ToInt32(reader["age"])
                             );
 
-                            lecturers.Add(lecturer);
+                            lecturers.Add(lecturer); 
                         }
                     }
                 }
@@ -52,7 +52,25 @@ namespace someren_application.Repositories
                 //end method refactoring
             }
             return lecturers;
+
+
         }
+
+      
+
+            private Lecturer ReadLecturer(SqlDataReader reader)
+        {
+            // Retrieve lecturer-specific data from the reader
+            string firstName = reader["firstName"].ToString();
+            string lastName = reader["lastName"].ToString();
+            string telephone = reader["telephone"].ToString();
+            int age = Convert.ToInt32(reader["age"]);
+
+            // Return new Lecturer object
+            return new Lecturer(firstName, lastName, telephone, age);
+        }
+
+        
         //Lecturer? ILecturerRepository.GetById(int lecturerId)
         //{
         //    return null;
