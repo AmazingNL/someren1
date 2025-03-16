@@ -18,6 +18,23 @@ namespace someren_application.Controllers
             return View(rooms);
         }
 
+        [HttpPost]
+        public IActionResult Filter(int capacity)
+        {
+
+            try
+            {
+                List<Room> rooms = _roomRepository.Filter(capacity);
+                return View(rooms);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("Index");
+            }
+        }
+
+
         [HttpGet]
         public IActionResult Create()
         {

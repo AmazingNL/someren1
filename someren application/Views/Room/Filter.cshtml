@@ -1,0 +1,44 @@
+﻿@model List<someren_application.Models.Room>
+@{
+    ViewData["Title"] = "Filtered Room";
+}
+<div class="text-center">
+    <h1 class="display-4">Room</h1>
+    <p>Available Rooms</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Capacity</th>
+                <th>Building</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Room room in Model)
+                {
+                    <tr>
+                        <td>@room.RoomNumber</td>
+                        <td>@room.RoomType</td>
+                        <td>@room.Capacity</td>
+                        <td>@room.Building</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td>
+                    <div class="col col-mid-3">
+                        <a asp-controller="Room" asp-action="Index" class="btn btn-outline-dark border form-control bg-danger">
+                            Back To Room
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
