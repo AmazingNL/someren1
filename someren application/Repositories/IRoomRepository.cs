@@ -9,5 +9,6 @@ namespace someren_application.Repositories
         void Add(Room room);
         void Update(Room room);
         void Delete(Room room);
+        List<Room> Filter(int capacity);
     }
 }
