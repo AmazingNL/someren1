@@ -5,11 +5,13 @@ namespace someren_application.Repositories
 {
     public interface IStudentsRepository
     {
-        List<Students> GetAll();
-        Students? GetById(int studentID);
+        List<Students> GetAllStudents();
+        Students? GetStudentById(int studentID);
         void Add(Students students);
-        void Update(Students students);
+        void Edit(Students students);
         void Delete(Students students);
+
+        List<Students> GetStudentsInRooms(int roomId);
 
     }
 }

@@ -15,9 +15,10 @@ namespace someren_application.Controllers
 
         public IActionResult Index()
         {
-            List<Students> students = _studentsRepository.GetAll();
+            var students = _studentsRepository.GetAllStudents();
             return View(students);
         }
+        
 
         [HttpGet]
         public IActionResult Create()
@@ -40,23 +41,38 @@ namespace someren_application.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int studentId)
+        public IActionResult Edit(int studentId)
         {
-            Students? students = _studentsRepository.GetById(studentId);
-            return View(studentId);
+            Students? students = _studentsRepository.GetStudentById(studentId);
+            return View(students);
         }
 
         [HttpPost]
-        public IActionResult Update(Students students)
+        public IActionResult Edit(Students students)
         {
             try
             {
-                _studentsRepository.Update(students);
+                _studentsRepository.Edit(students);
                 return RedirectToAction("Index");
             }
             catch (Exception)
             {
 
+                return View(students);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //get user via repository
+                Students? students = _studentsRepository.GetStudentById((int)id);
                 return View(students);
             }
         }
