@@ -86,19 +86,23 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM [room] WHERE roomId = @roomId";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@roomId", room.RoomId);
+                string query = "DELETE FROM [room] WHERE roomId = @RoomId";
 
-                connection.Open();
-                int nrOfRowsAffected = command.ExecuteNonQuery();
-
-                if (nrOfRowsAffected == 0)
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    throw new Exception("No records deleted!");
+                    command.Parameters.AddWithValue("@RoomId", room.RoomId);
+
+                    connection.Open();
+                    int nrOfRowsAffected = command.ExecuteNonQuery();
+
+                    if (nrOfRowsAffected == 0)
+                    {
+                        throw new Exception("No records deleted!");
+                    }
                 }
             }
         }
+
 
         List<Room> IRoomRepository.GetAll()
         {
@@ -106,7 +110,7 @@ namespace someren_application.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [room]";
+                string query = "SELECT * FROM [room] ORDER BY roomNumber";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
