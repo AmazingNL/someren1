@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using System.Data;
 
 
 
@@ -31,17 +32,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Lecturer lecturer = new Lecturer(
-
-                               Convert.ToInt32(reader["lecturerId"]),
-                               reader["firstName"].ToString(),
-                               reader["lastName"].ToString(),
-                               reader["phoneNumber"].ToString(),
-                               Convert.ToInt32(reader["age"]),
-                               Convert.ToInt32(reader["roomId"])
-                            );
-
-
+                            Lecturer lecturer = ReadLecturer(reader);   
                             lecturers.Add(lecturer);
                         }
                     }
@@ -66,8 +57,6 @@ namespace someren_application.Repositories
         private Lecturer ReadLecturer(SqlDataReader reader)
         {
             // Retrieve lecturer-specific data from the reader
-
-
             int lecturerID = Convert.ToInt32(reader["lecturerID"]);
             string firstName = reader["firstName"].ToString();
             string lastName = reader["lastName"].ToString();
@@ -88,7 +77,7 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [lecturer] WHERE lecturerID = @LecturerID";
+                string query = "SELECT lecturerId, firstName, lastName, phoneNumber, age, roomId FROM [lecturer] WHERE lecturerId = @LecturerID";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@LecturerID", lecturerID);
@@ -125,24 +114,42 @@ namespace someren_application.Repositories
 
         void ILecturerRepository.Add(Lecturer lecturer)
         {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "INSERT INTO [lecturer] ( firstName, lastName, phoneNumber, age, roomId) " +
+                "VALUES ( @FirstName, @LastName, @PhoneNumber, @Age ,@RoomID) " +
+                "SELECT SCOPE_IDENTITY();";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    string query = @"INSERT INTO [lecturer] (lecturerID, firstName, lastName, phoneNumber, age) 
-                                 VALUES (@LecturerID, @FirstName, @LastName, @PhoneNumber, @Age) SELECT SCOPE_IDENTITY();";
-
-
-                SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@LecturerID", lecturer.LecturerID);
+                    //command.Parameters.AddWithValue("@LecturerID", lecturer.LecturerID);
                     command.Parameters.AddWithValue("@FirstName", lecturer.FirstName);
                     command.Parameters.AddWithValue("@LastName", lecturer.LastName);
                     command.Parameters.AddWithValue("@PhoneNumber", lecturer.PhoneNumber);
                     command.Parameters.AddWithValue("@Age", lecturer.Age);
                     command.Parameters.AddWithValue("@RoomId", lecturer.RoomID);
-                    
 
-                    connection.Open();
-                //command.ExecuteNonQuery();
-                    lecturer.LecturerID = Convert.ToInt32(command.ExecuteNonQueryAsync()); // Check if the query actually inserted data
+                    try
+                    {
+                        connection.Open();
+                        //command.ExecuteNonQuery();
+                        int nrOfRowsAffected = command.ExecuteNonQuery(); // Check if the query actually inserted data
+
+                        if(nrOfRowsAffected != 1)
+                        {
+                            throw new Exception("No lecturer was inserted");
+                        }
+
+
+                    }
+                    catch (Exception)
+                    {
+
+                        throw new Exception("Something went wrong with the database");
+                    }
+
+                    
+                }
 
             }
         }
