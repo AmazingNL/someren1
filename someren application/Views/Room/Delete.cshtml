@@ -1,0 +1,35 @@
+﻿@model someren_application.Models.Room
+
+@{
+    ViewData["Title"] = "Delete Room";
+}
+
+<div>
+    <h1>Delete Room</h1>
+
+    <div class="form-group py-2">
+        <label>Room Number:</label>
+        <p>@Model.RoomNumber</p> <!-- Display Room Number -->
+    </div>
+    <div class="form-group py-2">
+        <label>Room Type:</label>
+        <p>@Model.RoomType</p> <!-- Display Room Type -->
+    </div>
+    <div class="form-group py-2">
+        <label>Capacity:</label>
+        <p>@Model.Capacity</p> <!-- Display Room Capacity -->
+    </div>
+    <div class="form-group py-2">
+        <label>Building:</label>
+        <p>@Model.Building</p> <!-- Display Room Building -->
+    </div>
+
+    <!-- Delete Confirmation Form with POST request -->
+    <form asp-controller="Room" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="RoomId" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>
+
+
+

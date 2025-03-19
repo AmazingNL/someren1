@@ -1,0 +1,48 @@
+﻿@model List<someren_application.Models.Activities>
+@{
+    ViewData["Title"] = "Activity";
+}
+<div class="text-center">
+    <h1 class="display-4">Activity</h1>
+    <p>Activities</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Activity Name</th>
+                <th>Time Slot</th>
+                <th>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-controller="Activities" asp-action="Create" class="btn btn-primary mx-2 ">
+                            ADD Activity
+                        </a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Activities activities in Model)
+                {
+                    <tr>
+                        <td>@activities.ActivityName</td>
+                        <td>@activities.TimeSlot</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="Activities" asp-action="Edit" asp-route-activityId="@activities.ActivityId" class="btn btn-primary mx-2 link-dark">
+                                    <i class="bi bi-pencil-square"></i>EDIT
+                                </a>
+                                <a asp-controller="Activities" asp-action="Delete" asp-route-activityId="@activities.ActivityId" class="btn btn-danger mx-2 link-primary">
+                                    <i class="bi bi-trash"></i>DELETE
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+

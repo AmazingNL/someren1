@@ -1,0 +1,21 @@
+﻿@model someren_application.Models.Activities
+
+@{
+    ViewData["Title"] = "Edit Activity";
+}
+
+<div>
+    <h1>Edit Activity</h1>
+    <form action="/Activities/Edit" method="post">
+        <input hidden asp-for="ActivityId" />
+        <div class="for-group py-2">
+            <label asp-for="ActivityName"></label>
+            <input asp-for="ActivityName" class="form-control" required />
+        </div>
+        <div class="for-group py-2">
+            <label asp-for="TimeSlot"></label>
+            <input asp-for="TimeSlot" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-secondary">Save</button>
+    </form>
+</div>
