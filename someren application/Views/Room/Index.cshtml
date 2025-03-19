@@ -30,7 +30,8 @@
         </thead>
         <tbody>
             @{
-                foreach (Room room in Model)
+                foreach (var room in Model) foreach (var lecture in Model)
+
                 {
                     <tr>
                         <td>@room.RoomNumber</td>
