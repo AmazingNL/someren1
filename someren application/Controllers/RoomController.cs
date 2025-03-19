@@ -18,6 +18,23 @@ namespace someren_application.Controllers
             return View(rooms);
         }
 
+        [HttpPost]
+        public IActionResult Filter(int capacity)
+        {
+
+            try
+            {
+                List<Room> rooms = _roomRepository.Filter(capacity);
+                return View(rooms);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("Index");
+            }
+        }
+
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -60,16 +77,35 @@ namespace someren_application.Controllers
             }
         }
 
+        //Get user
+        [HttpGet]
+        public IActionResult Delete(int? roomId)
+        {
+            if (roomId is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //get user via repository
+                Room? room = _roomRepository.GetById((int)roomId);
+                return View(room);
+            }
+        }
         [HttpPost]
         public IActionResult Delete(Room room)
         {
             try
             {
+                //delete user via repository
                 _roomRepository.Delete(room);
+
+                //go back to user list(via Index)
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //something went wrong, go back to view with user
                 return View(room);
             }
         }

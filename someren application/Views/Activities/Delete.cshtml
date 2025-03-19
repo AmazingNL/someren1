@@ -1,0 +1,24 @@
+﻿@model someren_application.Models.Activities
+
+@{
+    ViewData["Title"] = "Delete Activity";
+}
+
+<div>
+    <h1>Delete Activity</h1>
+
+    <div class="form-group py-2">
+        <label>Activity Name:</label>
+        <p>@Model.ActivityName</p> <!-- Display Room Number -->
+    </div>
+    <div class="form-group py-2">
+        <label>Time Slot:</label>
+        <p>@Model.TimeSlot</p> <!-- Display Room Type -->
+    </div>
+
+    <!-- Delete Confirmation Form with POST request -->
+    <form asp-controller="Activities" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="ActivityId" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>

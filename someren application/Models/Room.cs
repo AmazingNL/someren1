@@ -28,5 +28,7 @@ namespace someren_application.Models
         public string RoomNumber { get; set; } = string.Empty;
         public int Capacity { get; set; } = 0;
         public  string RoomType { get; set; } = string.Empty;
+
+        List<Students> students = new List<Students>();
     }
 }
