@@ -11,7 +11,7 @@ namespace someren_application.Controllers
 
         private ILecturerRepository _lecturerRpository;
 
-       
+
         public LecturerController(ILecturerRepository lecturerRpository)
 
         {
@@ -25,109 +25,111 @@ namespace someren_application.Controllers
             List<Lecturer> lecturers = _lecturerRpository.GetAll();
             return View(lecturers);
 
-            //returen View( _usersRepository.GetAll());
 
         }
+
+
+
+        // GET: Lecturer/Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+        //// POST: Lecturer/Create
+        [HttpPost]   
+        public IActionResult Create(Lecturer lecturer)
+        {
+            try
+            {
+                //add users via repostory
+                _lecturerRpository.Add(lecturer);
+
+                //go back to user list  (via index)
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception ex)
+            {
+                return View(lecturer);
+            }
+
+        }
+
+
+
+
+        ///GET:  Lecturer/ Edit
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+
+            if (id is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //get user via repository
+                Lecturer? lecturer = _lecturerRpository.GetById((int)id);
+                return View(lecturer);
+            }
+        }
+
+        ///POST:  Lecturer/ Edit
+        [HttpPost]
+        public IActionResult Edit(Lecturer lecturer)
+        {
+            try
+            {
+                //add users via repository
+                _lecturerRpository.Update(lecturer);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(lecturer);
+            }
+        }
+
+
+        ///GET:  Lecturer/ DELETE
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                //get user via repository
+                Lecturer? lecturer = _lecturerRpository.GetById((int)id);
+                return View(lecturer);
+            }
+        }
+
+        [HttpPost] ///POST:  Lecturer/ DELETE
+        public IActionResult Delete(Lecturer lecturer)
+        {
+            try
+            {
+                //delete user via repository
+                _lecturerRpository.Delete(lecturer);
+
+                //go back to user list(via Index)
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                //something went wrong, go back to view with user
+                return View(lecturer);
+            }
+        }
+
     }
 }
-//        [HttpGet]
-//        public IActionResult Create()
-//        {
-//            return View();
 
-//        }
-//        [HttpPost]
-//        public IActionResult Create(Lecturer lecturer)
-//        {
-//            try
-//            {
-//                //add users via repostory
-//                _lecturerRpository.Add(lecturer);
-
-//                //go back to user list  (via index)
-//                return RedirectToAction("Index");
-
-//            }
-//            catch (Exception ex)
-//            {
-//                return View(lecturer);
-//            }
-
-//        }
-
-
-
-
-//        //Get user 
-//        [HttpGet]
-//        public IActionResult Delete(int? id)
-//        {
-//            if (id is null)
-//            {
-//                return NotFound();
-//            }
-//            else
-//            {
-//                //get user via repository
-//                User? user = _usersRepository.GetById((int)id);
-//                return View(user);
-//            }
-//        }
-
-//        public IActionResult Delete(User user)
-//        {
-//            try
-//            {
-//                //delete user via repository
-//                _usersRepository.Delete(user);
-
-//                //go back to user list(via Index)
-//                return RedirectToAction("Index");
-//            }
-//            catch (Exception ex)
-//            {
-//                //something went wrong, go back to view with user
-//                return View(user);
-//            }
-//        }
-
-
-
-//        //edit
-//        [HttpGet]
-//        public IActionResult Edit(int? id)
-//        {
-
-//            if (id is null)
-//            {
-//                return NotFound();
-//            }
-//            else
-//            {
-//                //get user via repository
-//                User? user = _usersRepository.GetById((int)id);
-//                return View(user);
-//            }
-//        }
-
-//        [HttpPost]
-//        public IActionResult Edit(User user)
-//        {
-//            try
-//            {
-//                //add users via repository
-//                _usersRepository.Update(user);
-
-//                return RedirectToAction("Index");
-//            }
-//            catch (Exception ex)
-//            {
-//                return View(user);
-//            }
-//        }
-
-
-
-
-//    }
-//}

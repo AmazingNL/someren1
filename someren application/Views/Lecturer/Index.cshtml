@@ -3,7 +3,7 @@
 *@
 @model List<someren_application.Models.Lecturer>
 @{
-    ViewData["Title"] = "Lecturers";
+    ViewData["Title"] = "Lecturer";
 
 }
 <div class="text-center">
@@ -14,15 +14,16 @@
 
 <!-- Link to Create a new lecture -->
 <p>
-    <a href="/Lecturers/Create">Create New</a>
+    <a href="/Lecturer/Create">Create New</a>
 </p>
 
 <table class="table table-bordered">
     <thead>
         <tr>
+
             <th>FirstName</th>
 			<th>LastName</th>
-            <th>Telephone</th>
+            <th>PhoneNumber</th>
             <th>Age</th>
         </tr>
     </thead>
@@ -33,7 +34,7 @@
                 <tr>
                     <td>@lecture.FirstName</td>
                     <td>@lecture.LastName</td>
-                    <td>@lecture.Telephone</td>
+                    <td>@lecture.PhoneNumber</td>
                     <td>@lecture.Age</td>
                     <td>
                    

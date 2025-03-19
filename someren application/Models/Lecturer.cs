@@ -1,22 +1,36 @@
-﻿namespace someren_application.Models
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+
+namespace someren_application.Models
 {
     public class Lecturer
     {
 
-        //public int LecturerID { get; set; }
+        public int LecturerID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Telephone { get; set; }
+        public string PhoneNumber { get; set; }
         public int Age { get; set; }
-
-
-        public Lecturer(string firstName, string lastName, string telephone, int age)
+        public int RoomID { get; set; }
+        public Lecturer()
         {
-            //LecturerID = lecturerID;
+
+            LecturerID = 0;
+            FirstName = "";
+            LastName = "";
+            PhoneNumber = "";
+            Age = 0;
+            RoomID = 0;
+        }
+
+        public Lecturer(int lecturerID, string firstName, string lastName, string phoneNumber, int age, int roomId)
+        {
+            LecturerID = lecturerID;
             FirstName = firstName;
             LastName = lastName;
-            Telephone = telephone;
+            PhoneNumber = phoneNumber;
             Age = age;
+            RoomID = roomId;
+           
         }
     }
 }
