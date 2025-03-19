@@ -2,11 +2,44 @@
 
 namespace someren_application.Models
 {
-    public class Students : Controller
+    public class Students 
     {
-        public IActionResult Index()
+        public int StudentId { get; set; }
+
+        public Room? Room { get; set; }
+        public int RoomId     { get; set; }
+
+        public string StudentNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string StudentClass { get; set; }
+
+
+
+        
+        public Students()
         {
-            return View();
+            StudentId = 0;
+            StudentNumber = " ";
+            FirstName = " ";
+            LastName = " ";
+            PhoneNumber = "";
+            StudentClass = " ";
+            RoomId = 0;
+
+        }
+
+        public Students(int studentId, string studentNumber, string firstName, string lastName, string phoneNumber, string studentClass, int roomId) 
+        {
+            StudentId = studentId;
+            StudentNumber = studentNumber;
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            StudentClass = studentClass;
+            RoomId = roomId;
+            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<someren_application.Models.Students>
+@{
     ViewData["Title"] = "Students";
 }
 
@@ -10,35 +11,42 @@
 <table class="table">
     <thead>
         <tr>
+            <th>StudentNumber</th>
             <th>FirstName</th>
             <th>LastName</th>
-            <th>Telephone</th>
-            <th>EmailAddress</th>
+            <th>PhoneNumber</th>
+            <th>StudentClass</th>
+            <th>RoomId</th>
+
             <th>
                 <div>
                     <div class="w-75 btn-group" role="group">
-                        <a asp-controller="Users" asp-action="Create" class="btn btn-primary mx-2 ">
-                            ADD Student
+                        <a asp-controller="Students" asp-action="Create" class="btn btn-primary mx-2 ">
+                            Add Student
                         </a>
                     </div>
+                </div>
             </th>
         </tr>
     </thead>
     <tbody>
         @{
-            foreach (var student in Model)
+            foreach (Students student in Model)
             {
                 <tr>
+                    <td>@student.StudentNumber</td>
                     <td>@student.FirstName</td>
                     <td>@student.LastName</td>
-                    <td>@student.Telephone</td>
-                    <td>@student.EmailAddress</td>
+                    <td>@student.PhoneNumber</td>
+                    <td>@student.StudentClass</td>
+                    <td>@student.RoomId</td>
+                    
                     <td>
                         <div class="w-75 btn-group" role="group">
-                            <a asp-controller="Users" asp-action="Edit" asp-route-id="@student.StudentId" class="btn btn-primary mx-2 ">
+                            <a asp-controller="Students" asp-action="Edit" asp-route-id="@student.StudentId" class="btn btn-primary mx-2 ">
                                 <i class="bi bi-pencil-square"></i>EDIT
                             </a>
-                            <a asp-controller="Users" asp-action="Delete" asp-route-id="@student.StudentId" class="btn btn-danger mx-2 ">
+                            <a asp-controller="Students" asp-action="Delete" asp-route-id="@student.StudentId" class="btn btn-danger mx-2 ">
                                 <i class="bi bi-trash"></i>DELETE
                             </a>
                         </div>
