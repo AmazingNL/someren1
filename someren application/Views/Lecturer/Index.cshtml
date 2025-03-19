@@ -1,5 +1,46 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<someren_application.Models.Lecturer>
 @{
+    ViewData["Title"] = "Lecturers";
+
 }
+<div class="text-center">
+    <h1 class="display-4">Lecturers</h1>
+    @* <p>all lecturers are listed here...</p> *@
+    <p>Number of the usser in the list : @Model.Count</p>
+</div>
+
+<!-- Link to Create a new lecture -->
+<p>
+    <a href="/Lecturers/Create">Create New</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>FirstName</th>
+			<th>LastName</th>
+            <th>Telephone</th>
+            <th>Age</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var lecture in Model)
+            {
+                <tr>
+                    <td>@lecture.FirstName</td>
+                    <td>@lecture.LastName</td>
+                    <td>@lecture.Telephone</td>
+                    <td>@lecture.Age</td>
+                    <td>
+                   
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
