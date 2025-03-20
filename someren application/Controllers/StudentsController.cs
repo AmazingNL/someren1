@@ -7,10 +7,11 @@ namespace someren_application.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentsRepository _studentsRepository;
-
-        public StudentsController(IStudentsRepository studentsRepository)
+        private readonly IRoomRepository _roomRepository;
+        public StudentsController(IStudentsRepository studentsRepository, IRoomRepository roomRepository)
         {
             _studentsRepository = studentsRepository;
+            _roomRepository = roomRepository;
         }
 
         public IActionResult Index()
@@ -23,6 +24,7 @@ namespace someren_application.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            ViewBag.Rooms = _roomRepository.GetAll();
             return View();
         }
         [HttpPost]
@@ -33,9 +35,10 @@ namespace someren_application.Controllers
                 _studentsRepository.Add(students);
                 return RedirectToAction("Index");
             }
+
             catch (Exception)
             {
-
+                ViewBag.Rooms = _roomRepository.GetAll();                
                 return View(students);
             }
         }

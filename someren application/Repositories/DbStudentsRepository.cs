@@ -16,7 +16,7 @@ namespace someren_application.Repositories
 
         List<Students> IStudentsRepository.GetAllStudents()
         {
-            List<Students> students = [];
+            List<Students> students = new List<Students>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -111,6 +111,7 @@ namespace someren_application.Repositories
                     command.Parameters.AddWithValue("@LastName", students.LastName);
                     command.Parameters.AddWithValue("@PhoneNumber", students.PhoneNumber);
                     command.Parameters.AddWithValue("@StudentClass", students.StudentClass);
+                    command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
 
                     // ✅ Handle nullable roomId properly
                     command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
@@ -167,10 +168,12 @@ namespace someren_application.Repositories
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@StudentId", students.StudentId);
                 command.Parameters.AddWithValue("@StudentNumber", students.StudentNumber);
-                command.Parameters.AddWithValue("@firstName", students.FirstName);
-                command.Parameters.AddWithValue("@lastName", students.LastName);
-                command.Parameters.AddWithValue("@phoneNumber", students.PhoneNumber);
-                command.Parameters.AddWithValue("@studentClass", students.StudentClass);
+                command.Parameters.AddWithValue("@FirstName", students.FirstName);
+                command.Parameters.AddWithValue("@LastName", students.LastName);
+                command.Parameters.AddWithValue("@PhoneNumber", students.PhoneNumber);
+                command.Parameters.AddWithValue("@StudentClass", students.StudentClass);
+                command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
+
 
                 command.Connection.Open();
                 int nrOfRowsAffected = command.ExecuteNonQuery();
