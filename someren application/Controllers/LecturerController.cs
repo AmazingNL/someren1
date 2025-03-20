@@ -15,7 +15,7 @@ namespace someren_application.Controllers
         public LecturerController(ILecturerRepository lecturerRpository)
 
         {
-            _lecturerRpository = lecturerRpository; // ✅ Properly using the injected repository
+            _lecturerRpository = lecturerRpository; //Properly using the injected repository
         }
 
 
