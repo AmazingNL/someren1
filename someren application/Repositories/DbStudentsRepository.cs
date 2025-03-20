@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using System.Collections.Generic;
 using System.Data;
 
 namespace someren_application.Repositories
@@ -20,41 +21,36 @@ namespace someren_application.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [student]";
+                string query = "SELECT * FROM [student] ";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (reader.Read()) // If a record is found
                         {
-
-                            Students students1 = ReadUser(reader);
-                            students.Add(students1);
+                            students.Add(ReadUser(reader));
                         }
                     }
                 }
                 catch (SqlException ex)
                 {
-
                     throw new Exception("Something went wrong in the database", ex);
                 }
                 catch (Exception ex)
                 {
-
                     throw new Exception("Data not reading", ex);
                 }
-
             }
             return students;
         }
 
-        public Students? GetStudentsById(int studentId)
+        Students? IStudentsRepository.GetStudentsById(int studentId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT studentId, studentNumber, firstName, lastName, phoneNumber, studentClass FROM [student] WHERE studentId = @StudentId"; // search for the room and return its record
+                string query = "SELECT studentId, studentNumber, firstName, lastName, phoneNumber, studentClass, roomId FROM [student] WHERE studentId = @StudentId"; // search for the room and return its record
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@StudentId", studentId);
 
@@ -96,12 +92,9 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = @"
-            INSERT INTO [student] 
-            (studentNumber, firstName, lastName, phoneNumber, studentClass, roomId) 
-            VALUES 
-            (@StudentNumber, @FirstName, @LastName, @PhoneNumber, @StudentClass, @RoomId);
-            SELECT SCOPE_IDENTITY();";
+                string query = "INSERT INTO [student] (studentNumber, firstName, lastName, phoneNumber, studentClass, roomId)" +
+                    " VALUES (@StudentNumber, @FirstName, @LastName, @PhoneNumber, @StudentClass, @RoomId);" +
+                    "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -113,15 +106,12 @@ namespace someren_application.Repositories
                     command.Parameters.AddWithValue("@StudentClass", students.StudentClass);
                     command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
 
-                    // ✅ Handle nullable roomId properly
-                    command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
-
                     try
                     {
                         connection.Open(); // Open the connection
                         int nrOfRowsAffected = command.ExecuteNonQuery();
 
-                        // ✅ Optional: Log success
+                        //  Optional: Log success
                         Console.WriteLine($"Rows affected: {nrOfRowsAffected}");
 
                         if (nrOfRowsAffected != 1)
@@ -151,12 +141,20 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM [student] WHERE studentId = @studentId";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@studentId", students.StudentId);
+                string query = "DELETE FROM [student] WHERE studentId = @StudentId";
 
-                connection.Open();
-                command.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentId", students.StudentId);
+
+                    connection.Open();
+                    int nrOfRowsAffected = command.ExecuteNonQuery();
+
+                    if (nrOfRowsAffected == 0)
+                    {
+                        throw new Exception("No records deleted!");
+                    }
+                }
             }
         }
 
@@ -172,13 +170,17 @@ namespace someren_application.Repositories
                 command.Parameters.AddWithValue("@LastName", students.LastName);
                 command.Parameters.AddWithValue("@PhoneNumber", students.PhoneNumber);
                 command.Parameters.AddWithValue("@StudentClass", students.StudentClass);
-                command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
 
+                try
+                {
+                    connection.Open();
+                    int nrOfRowsAffected = command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
 
-                command.Connection.Open();
-                int nrOfRowsAffected = command.ExecuteNonQuery();
-                if (nrOfRowsAffected == 0)
-                    throw new Exception("No records updated!");
+                    throw new Exception("No record updated!");
+                }
             }
         }
 
@@ -187,9 +189,6 @@ namespace someren_application.Repositories
             throw new NotImplementedException();
         }
 
-        public Students? GetStudentById(int studentID)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }
