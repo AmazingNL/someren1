@@ -1,0 +1,68 @@
+﻿@model someren_application.Models.Lecturer
+
+@{
+    ViewData["Title"] = "Create Lecturer";
+}
+
+<form method="post" asp-controller="Lecturer" asp-action="Create" onsubmit="alert('Lecturer created successfully!');">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">
+                Create New Lecturer
+            </h2>
+            <hr />
+        </div>
+
+        <!-- First Name -->
+        <div class="mb-3 row">
+            <label asp-for="FirstName" class="p-0"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <!-- Last Name -->
+        <div class="mb-3 row">
+            <label asp-for="LastName" class="p-0"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <!-- Telephone -->
+        <div class="mb-3 row">
+            <label asp-for="PhoneNumber" class="p-0"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <!-- Age -->
+        <div class="mb-3 row">
+            <label asp-for="Age" class="p-0"></label>
+            <input asp-for="Age" type="number" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <!-- Room ID  -->
+        <div class="mb-3 row">
+            <label asp-for="RoomID" class="p-0"></label>
+            <input asp-for="RoomID" type="number" class="form-control" />
+            <span asp-validation-for="RoomID" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-primary form-control">Create</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Lecturer" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

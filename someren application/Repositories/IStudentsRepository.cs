@@ -11,7 +11,6 @@ namespace someren_application.Repositories
         void Edit(Students students);
         void Delete(Students students);
 
-
         List<Students> GetStudentsInRooms(int roomId);
 
     }

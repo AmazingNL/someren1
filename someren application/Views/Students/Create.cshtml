@@ -1,64 +1,69 @@
 ﻿@model someren_application.Models.Students
-var room = ViewBag.rooms 
 
+@{
+    ViewBag.Title = "Create Student";
+    List<someren_application.Models.Room> rooms = ViewBag.Rooms;
+}
 
 <form method="post" asp-controller="Students" asp-action="Create" onsubmit="alert('New student added');">
-    <div class="border p-3 mt-4"> </div>
-    <div class="row pb-2">
-        <h2 class="text-primary">
-            Create Student
-        </h2>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="StudentNumber" class="p-0"></label>
-        <input asp-for="StudentNumber" class="form-control" />
-        <span asp-validation-for="StudentNumber" class="text-danger"></span>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="FirstName" class="p-0"></label>
-        <input asp-for="FirstName" class="form-control" />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="LastName" class="p-0"></label>
-        <input asp-for="LastName" class="form-control" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="PhoneNumber" class="p-0"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="StudentClass" class="p-0"></label>
-        <input asp-for="StudentClass" class="form-control" />
-        <span asp-validation-for="StudentClass" class="text-danger"></span>
-    </div>
-    <div class="mb-3 row">
-        <label asp-for="RoomId" class="p-0"></label>
-        <select asp-for="RoomId" class="form-select" aria-label="Default select example">
-            <option selected>Pick a room</option>
-            @{
-                List<Room> rooms = [];
-                @foreach (Room room in ViewBag.rooms)
+    <div class="border p-3 mt-4">
+
+        <div class="row pb-2">
+            <h2 class="text-primary">Create Student</h2>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="StudentNumber" class="p-0"></label>
+            <input asp-for="StudentNumber" class="form-control" />
+            <span asp-validation-for="StudentNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="FirstName" class="p-0"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="LastName" class="p-0"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="PhoneNumber" class="p-0"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="StudentClass" class="p-0"></label>
+            <input asp-for="StudentClass" class="form-control" />
+            <span asp-validation-for="StudentClass" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row">
+            <label asp-for="RoomId" class="p-0"></label>
+            <select asp-for="RoomId" class="form-select">
+                <option value="">Pick a room</option>
+                @foreach (var room in rooms)
                 {
                     <option value="@room.RoomId">@room.RoomNumber - @room.Building</option>
                 }
-            }
-
-        </select>
-    </div>
-
-
-
-    <div class="row">
-        <div class="col-6 col-mid-3">
-            <button type="submit" class="btn btn-primary form-control">Create</button>
+            </select>
+            <span asp-validation-for="RoomId" class="text-danger"></span>
         </div>
-        <div class="col col-mid-3">
-            <a asp-controller="Students" asp-action="Index" class="btn btn-outline-secondary border form-control">
-                Back To Students
-            </a>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-primary form-control">Create</button>
+            </div>
+            <div class="col col-md-3">
+                <a asp-controller="Students" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                    Back To Students
+                </a>
+            </div>
         </div>
     </div>
 </form>
+
