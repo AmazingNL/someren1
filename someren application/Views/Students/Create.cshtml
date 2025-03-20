@@ -1,4 +1,6 @@
 ﻿@model someren_application.Models.Students
+var room = ViewBag.rooms 
+
 
 <form method="post" asp-controller="Students" asp-action="Create" onsubmit="alert('New student added');">
     <div class="border p-3 mt-4"> </div>
@@ -33,10 +35,17 @@
         <span asp-validation-for="StudentClass" class="text-danger"></span>
     </div>
     <div class="mb-3 row">
-        <label asp-for="RoomId" class="p-0"></label>        
-        <select class="form-select" aria-label="Default select example">
+        <label asp-for="RoomId" class="p-0"></label>
+        <select asp-for="RoomId" class="form-select" aria-label="Default select example">
             <option selected>Pick a room</option>
-           
+            @{
+                List<Room> rooms = [];
+                @foreach (Room room in ViewBag.rooms)
+                {
+                    <option value="@room.RoomId">@room.RoomNumber - @room.Building</option>
+                }
+            }
+
         </select>
     </div>
 
