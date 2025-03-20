@@ -30,7 +30,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Room room = ReadUser(reader);
+                            Room room = ReadRoom(reader);
                             rooms.Add(room);
                         }
                     }
@@ -71,7 +71,7 @@ namespace someren_application.Repositories
 
                         if (nrOfRowsAffected != 1)
                         {
-                            throw new Exception("Adding user failed!");
+                            throw new Exception("Adding room failed!");
                         }
                     }
                     catch (Exception ex)
@@ -119,7 +119,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Room room = ReadUser(reader);
+                            Room room = ReadRoom(reader);
                             rooms.Add(room);
                         }
                     }
@@ -139,7 +139,7 @@ namespace someren_application.Repositories
             return rooms;
         }
 
-        private Room ReadUser(SqlDataReader reader)
+        private Room ReadRoom(SqlDataReader reader)
         {
             // Retrieve data from room table
             int roomId = (int)reader["roomId"];

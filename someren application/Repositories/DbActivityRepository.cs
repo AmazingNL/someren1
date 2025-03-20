@@ -27,7 +27,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Activities activity = ReadUser(reader);
+                            Activities activity = ReadActivity(reader);
                             activities.Add(activity);
                         }
                     }
@@ -47,7 +47,7 @@ namespace someren_application.Repositories
             return activities;
         }
 
-        private Activities ReadUser(SqlDataReader reader)
+        private Activities ReadActivity(SqlDataReader reader)
         {
             // Retrieve data from room table
             int activityId = (int)reader["activityId"];
@@ -115,8 +115,9 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE [activity] SET activityName = @ActivityName, timeSlot = @TimeSlot WHERE activityId = @ActivityId";
+                string query = "UPDATE [activity] SET activityName = @ActivityName, timeSlot = @TimeSlot WHERE [activityId] = @ActivityId";
                 SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ActivityId", activity.ActivityId);
                 command.Parameters.AddWithValue("@ActivityName", activity.ActivityName); //  prevent SQL injection to occur by using SQL parameters
                 command.Parameters.AddWithValue("@TimeSlot", activity.TimeSlot);
                 try
@@ -136,7 +137,7 @@ namespace someren_application.Repositories
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM [room] WHERE roomId = @RoomId";
+                string query = "DELETE FROM [activity] WHERE activityId = @ActivityId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
