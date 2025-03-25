@@ -23,7 +23,8 @@ namespace someren_application.Repositories
             //below code must be re-factored to a seperate private method
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "Select * FROM [lecturer]";
+                string query = "Select * FROM [lecturer]" +
+                    "ORDER BY LastName";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {

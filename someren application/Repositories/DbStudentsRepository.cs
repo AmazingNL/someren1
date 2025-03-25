@@ -21,7 +21,7 @@ namespace someren_application.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [student] ";
+                string query = "SELECT * FROM [student] ORDER BY lastName ";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
