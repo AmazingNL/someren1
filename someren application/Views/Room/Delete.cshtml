@@ -23,12 +23,20 @@
         <label>Building:</label>
         <p>@Model.Building</p> <!-- Display Room Building -->
     </div>
-
-    <!-- Delete Confirmation Form with POST request -->
-    <form asp-controller="Room" asp-action="Delete" method="post">
-        <input type="hidden" asp-for="RoomId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
+    <div class="row">
+        <div class="col-3">
+            <!-- Delete Confirmation Form with POST request -->
+            <form asp-controller="Room" asp-action="Delete" method="post">
+                <input type="hidden" asp-for="RoomId" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Room" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                Back To User
+            </a>
+        </div>
+    </div>
 </div>
 
 
