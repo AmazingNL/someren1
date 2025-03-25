@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create Lecturer";
+	List<someren_application.Models.Room> rooms = ViewBag.Rooms;
 }
 
 <form method="post" asp-controller="Lecturer" asp-action="Create" onsubmit="alert('Lecturer created successfully!');">
@@ -44,8 +45,17 @@
         <!-- Room ID  -->
         <div class="mb-3 row">
             <label asp-for="RoomID" class="p-0"></label>
-            <input asp-for="RoomID" type="number" class="form-control" />
+            @* <input asp-for="RoomID" type="number" class="form-control" /> *@
+            @* <span asp-validation-for="RoomID" class="text-danger"></span> *@
+            <select asp-for="RoomID" class="form-select">
+                <option value="">Pick a room</option>
+                @foreach (Room room in rooms)
+                {
+                    <option value="@room.RoomId">@room.RoomNumber - @room.Building</option>
+                }
+            </select>
             <span asp-validation-for="RoomID" class="text-danger"></span>
+
         </div>
 
         <div class="row">
