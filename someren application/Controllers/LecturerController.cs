@@ -10,12 +10,13 @@ namespace someren_application.Controllers
 
 
         private ILecturerRepository _lecturerRpository;
+        private readonly IRoomRepository _roomRepository;
 
-
-        public LecturerController(ILecturerRepository lecturerRpository)
+        public LecturerController(ILecturerRepository lecturerRpository, IRoomRepository roomRepository)
 
         {
             _lecturerRpository = lecturerRpository; //Properly using the injected repository
+            _roomRepository = roomRepository;
         }
 
 
@@ -34,6 +35,8 @@ namespace someren_application.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            //return View();
+            ViewBag.Rooms = _roomRepository.GetAll();
             return View();
         }
 
@@ -53,6 +56,7 @@ namespace someren_application.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.Rooms = _roomRepository.GetAll();
                 return View(lecturer);
             }
 

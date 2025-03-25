@@ -45,8 +45,6 @@
         <!-- Room ID  -->
         <div class="mb-3 row">
             <label asp-for="RoomID" class="p-0"></label>
-            @* <input asp-for="RoomID" type="number" class="form-control" /> *@
-            @* <span asp-validation-for="RoomID" class="text-danger"></span> *@
             <select asp-for="RoomID" class="form-select">
                 <option value="">Pick a room</option>
                 @foreach (Room room in rooms)

@@ -46,9 +46,11 @@ namespace someren_application.Controllers
         [HttpGet]
         public IActionResult Edit(int studentId)
         {
-            Students? students = _studentsRepository.GetStudentById(studentId);
+            Students? students = _studentsRepository.GetStudentsById(studentId);
             return View(students);
         }
+
+
 
         [HttpPost]
         public IActionResult Edit(Students students)
@@ -66,19 +68,16 @@ namespace someren_application.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int? studentId)
         {
-            if (id is null)
+            if (studentId is null)
             {
                 return NotFound();
             }
-            else
-            {
-                //get user via repository
-                Students? students = _studentsRepository.GetStudentById((int)id);
-                return View(students);
-            }
+            Students? students = _studentsRepository.GetStudentsById((int)studentId);
+            return View(students);
         }
+
 
         [HttpPost]
         public IActionResult Delete(Students students)
@@ -93,5 +92,6 @@ namespace someren_application.Controllers
                 return View(students);
             }
         }
+
     }
 }
