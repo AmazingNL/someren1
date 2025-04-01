@@ -19,16 +19,14 @@ namespace someren_application.Models
             RoomId = 0;
             Building = " ";
             RoomNumber = " ";
-            Capacity = 0;
+            Capacity = -1;
             RoomType = " ";
         }
 
-        public int RoomId { get; set; } = 0;
-        public string Building { get; set; } = string.Empty;
-        public string RoomNumber { get; set; } = string.Empty;
-        public int Capacity { get; set; } = 0;
-        public  string RoomType { get; set; } = string.Empty;
-
-        List<Students> students = new List<Students>();
+        public int RoomId { get; set; } 
+        public string Building { get; set; }
+        public string RoomNumber { get; set; }
+        public int Capacity { get; set; }
+        public  string RoomType { get; set; }
     }
 }

@@ -4,13 +4,12 @@ namespace someren_application.Models
 {
     public class Activities
     {
-        private DateTime dateTime;
 
         public Activities()
         {
             ActivityName = "";
             ActivityId = 0;
-            TimeSlot = dateTime;
+            TimeSlot = DateTime.Now;
         }
 
         public Activities(int activityId, string activityName, DateTime timeSet)

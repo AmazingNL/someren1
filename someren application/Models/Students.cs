@@ -4,11 +4,8 @@ namespace someren_application.Models
 {
     public class Students
     {
+        public List<Room> Rooms { get; set; }
         public int StudentId { get; set; }
-
-        public Room? Room { get; set; }
-        public int RoomId { get; set; }
-
         public string StudentNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -23,10 +20,10 @@ namespace someren_application.Models
             LastName = " ";
             PhoneNumber = "";
             StudentClass = " ";
-            RoomId = 0;
+            Rooms = new List<Room>();
         }
 
-        public Students(int studentId, string studentNumber, string firstName, string lastName, string phoneNumber, string studentClass, int roomId)
+        public Students(int studentId, string studentNumber, string firstName, string lastName, string phoneNumber, string studentClass, List<Room> room)
         {
             StudentId = studentId;
             StudentNumber = studentNumber;
@@ -34,7 +31,8 @@ namespace someren_application.Models
             LastName = lastName;
             PhoneNumber = phoneNumber;
             StudentClass = studentClass;
-            RoomId = roomId;
+            Rooms = room;
+    
         }
     }
 }

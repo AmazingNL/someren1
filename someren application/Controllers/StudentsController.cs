@@ -16,32 +16,46 @@ namespace someren_application.Controllers
 
         public IActionResult Index()
         {
-            var students = _studentsRepository.GetAllStudents();
+            List<Students> students = _studentsRepository.GetAllStudent();
             return View(students);
         }
-        
+
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Rooms = _roomRepository.GetAll();
-            return View();
+            // Fetch room from the repository
+            var rooms = _roomRepository.GetAll() ?? new List<Room>();
+
+            // Check if lists are empty, and return an error or redirect
+            if (!rooms.Any())
+            {
+                TempData["ErrorMessage"] = "No room available. Please add room before creating an student.";
+            }
+
+            // Create the view model and pass it to the view
+            var viewModel = new Students
+            {
+                Rooms = rooms
+            };
+
+            return View(viewModel);
         }
+
         [HttpPost]
-        public IActionResult Create(Students students)
+        public IActionResult Create(Students student)
         {
             try
             {
-                _studentsRepository.Add(students);
-                return RedirectToAction("Index");
+                _studentsRepository.Add(student);  // Add student to database
+                return RedirectToAction("Index");  // Redirect after successful addition
             }
-
             catch (Exception)
             {
-                ViewBag.Rooms = _roomRepository.GetAll();                
-                return View(students);
+                return View(student);  // Return the student object with validation errors
             }
         }
+
 
         [HttpGet]
         public IActionResult Edit(int studentId)
@@ -95,3 +109,4 @@ namespace someren_application.Controllers
 
     }
 }
+

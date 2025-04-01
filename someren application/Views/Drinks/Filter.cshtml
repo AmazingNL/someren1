@@ -1,0 +1,42 @@
+﻿@model List<someren_application.Models.Drinks>
+@{
+    ViewData["Title"] = "Filtered Drinks";
+}
+<div class="text-center">
+    <h1 class="display-4">Drinks</h1>
+    <p>Available Drinks</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Drink Name</th>
+                <th>Alcoholic / Non-Alcoholic</th>
+                <th>Vat Rate</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Drinks drinks in Model)
+                {
+                    <tr>
+                        <td>@drinks.DrinkName</td>
+                        <td>@drinks.IsAlcoholic</td>
+                        <td>@drinks.VatRate</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td>
+                    <div class="col col-mid-3">
+                        <a asp-controller="Drinks" asp-action="Index" class="btn btn-outline-dark border form-control bg-danger">
+                            Back To Drinks
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>

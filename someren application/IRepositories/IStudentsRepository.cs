@@ -5,7 +5,7 @@ namespace someren_application.Repositories
 {
     public interface IStudentsRepository
     {
-        List<Students> GetAllStudents();
+        List<Students> GetAllStudent();
         Students? GetStudentsById (int studentID);
         void Add(Students students);
         void Edit(Students students);

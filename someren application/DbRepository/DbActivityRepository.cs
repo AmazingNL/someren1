@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using someren_application.Repositories;
 using System.Data;
 using System.Diagnostics;
 
-namespace someren_application.Repositories
+namespace someren_application.DbRepository
 {
     public class DbActivityRepository : IActivityRepository
     {
@@ -100,7 +101,7 @@ namespace someren_application.Repositories
 
                         if (nrOfRowsAffected != 1)
                         {
-                            throw new Exception("Adding user failed!");
+                            throw new Exception("Adding activity failed!");
                         }
                     }
                     catch (Exception ex)

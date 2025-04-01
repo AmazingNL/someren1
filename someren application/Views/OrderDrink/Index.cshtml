@@ -1,0 +1,63 @@
+﻿@model List<someren_application.Models.OrderDrinks>
+@{
+    ViewData["Title"] = "Order Drinks";
+}
+<div class="text-center">
+    <h1 class="display-4">Order Drinks</h1>
+    <p>Order Drinks</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>OrderId</th>
+                <th>Student Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone Number</th>
+                <th>Student Class</th>
+                <th>Drink Name</th>
+                <th>IsAlcoholic / Non-Alcoholic</th>
+                <th>Vat Rate</th>
+                <th>TotalDrink</th>
+                <th>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-controller="OrderDrink" asp-action="Create" class="btn btn-primary mx-2 ">
+                            ADD Order
+                        </a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (OrderDrinks orderDrinks in Model)
+                {
+                    <tr>
+                        <td>@orderDrinks.OrderId</td>
+                        <!-- Accessing the first student in the list (index 0) -->
+                        <td>@orderDrinks.Students[0]?.StudentNumber</td> <!-- Student number -->
+                        <td>@orderDrinks.Students[0]?.FirstName</td>    <!-- First name -->
+                        <td>@orderDrinks.Students[0]?.LastName</td>     <!-- Last name -->
+                        <td>@orderDrinks.Students[0]?.PhoneNumber</td>  <!-- Phone number -->
+                        <td>@orderDrinks.Students[0]?.StudentClass</td> <!-- Class -->
+                        <!--Accessing the first drink in the list (index 0) -->
+                        <td>@orderDrinks.Drinks[0]?.DrinkName</td>      <!-- Drink name -->
+                        <td>@orderDrinks.Drinks[0]?.IsAlcoholic</td>    <!-- Is Alcoholic -->
+                        <td>@orderDrinks.Drinks[0]?.VatRate</td>        <!-- Vat rate -->
+                        <td>@orderDrinks.TotalDrink</td>              <!-- Total drink -->
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="OrderDrink" asp-action="Delete" asp-route-orderId="@orderDrinks.OrderId" class="btn btn-danger mx-2 link-primary">
+                                    <i class="bi bi-trash"></i>DELETE
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+

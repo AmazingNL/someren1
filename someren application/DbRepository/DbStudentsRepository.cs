@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using someren_application.Repositories;
 using System.Collections.Generic;
 using System.Data;
 
-namespace someren_application.Repositories
+namespace someren_application.DbRepository
 {
     public class DbStudentsRepository : IStudentsRepository
     {
@@ -15,42 +16,48 @@ namespace someren_application.Repositories
         }
 
 
-        List<Students> IStudentsRepository.GetAllStudents()
+        List<Students> IStudentsRepository.GetAllStudent()
         {
             List<Students> students = new List<Students>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [student] ORDER BY lastName ";
+                string query = "SELECT S.studentId, S.studentNumber, S.firstName, S.lastName, S.phoneNumber," +
+                    " S.studentClass, R.roomId, R.building, R.roomNumber, R.roomType, R.capacity " +
+                    "FROM [student] AS S JOIN [room] AS R ON S.roomId = R.roomId ";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read()) // If a record is found
+                        while (reader.Read())
                         {
-                            students.Add(ReadUser(reader));
+                            students.Add(ReadStudent(reader)); // Add the student to the list
                         }
                     }
                 }
-                catch (SqlException ex)
-                {
-                    throw new Exception("Something went wrong in the database", ex);
-                }
                 catch (Exception ex)
                 {
-                    throw new Exception("Data not reading", ex);
+                    Console.WriteLine($"Exception: {ex.Message}");  // Log the exception message
+                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");  // Log the stack trace
+                    throw new Exception("Error while fetching students with rooms.", ex);
                 }
             }
             return students;
         }
+            
 
         Students? IStudentsRepository.GetStudentsById(int studentId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT studentId, studentNumber, firstName, lastName, phoneNumber, studentClass, roomId FROM [student] WHERE studentId = @StudentId"; // search for the room and return its record
+                string query = "SELECT S.studentId, S.studentNumber, S.firstName, S.lastName, " +
+                    "S.phoneNumber, S.studentClass, R.roomId, R.building, R.roomNumber," +
+                    " R.roomType, R.capacity " +
+                    "FROM [student] AS S JOIN [room] AS R ON S.roomId = R.roomId" +
+                    " WHERE S.[studentId] = @StudentId ";
+                   // search for the room and return its record
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@StudentId", studentId);
 
@@ -59,22 +66,14 @@ namespace someren_application.Repositories
                 {
                     if (reader.Read()) // If a record is found
                     {
-                        return new Students(
-                            (int)reader["studentId"],
-                            (string)reader["studentNumber"],
-                            (string)reader["firstName"],
-                            (string)reader["lastName"],
-                            (string)reader["phoneNumber"],
-                            (string)reader["studentClass"],
-                            (int)reader["roomId"]
-                        );
+                        ReadStudent(reader);
                     }
                 }
             }
             return null; // Return null if no student is found
         }
 
-        private Students ReadUser(SqlDataReader reader)
+        private Students ReadStudent(SqlDataReader reader)
         {
             // Retrieve data from room table
             int studentId = (int)reader["studentId"];
@@ -84,12 +83,70 @@ namespace someren_application.Repositories
             string phoneNumber = (string)reader["phoneNumber"];
             string studentClass = (string)reader["studentClass"];
             int roomId = (int)reader["roomId"];
-            // Return new User object
-            return new Students(studentId, studentNumber, firstName, lastName, phoneNumber, studentClass, roomId);
+            string building = (string)reader["building"];
+            string roomNumber = (string)reader["roomNumber"];
+            int capacity = (int)reader["capacity"];
+            string roomType = (string)reader["roomType"];
+            // Return new Room object
+            return new Students
+            {
+                StudentId = studentId,
+                StudentNumber = studentNumber,
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                StudentClass = studentClass,
+                Rooms = new List<Room> // Changed from Room to List<Room>
+                {
+                    new Room
+                    {
+                        RoomId = roomId,
+                        Building = building,
+                        RoomNumber = roomNumber,
+                        Capacity = capacity,
+                        RoomType = roomType
+                    }
+                }
+            };
+        }
+
+        private int IsStudentRoomFull(Room room)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND capacity = 8";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
+
+                    try
+                    {
+                        connection.Open();
+                        int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
+                        return count;  // return number of roomNumber
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception($"error checking if room count");
+                    }
+                }
+            }
         }
 
         public void Add(Students students)
         {
+   
+            //if (room == null)
+            //{
+            //    throw new Exception("Student must be assigned to a room.");
+            //}
+
+            //if (IsStudentRoomFull(room) == 8) // Pass the first room in the list
+            //{
+            //    throw new Exception("Room is full");
+            //}
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string query = "INSERT INTO [student] (studentNumber, firstName, lastName, phoneNumber, studentClass, roomId)" +
@@ -98,21 +155,23 @@ namespace someren_application.Repositories
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
+                    var room = students.Rooms.FirstOrDefault();
+                    if (room == null)
+                    {
+                        throw new InvalidOperationException("No student selected.");
+                    }
                     // Parameters with correct casing
                     command.Parameters.AddWithValue("@StudentNumber", students.StudentNumber);
                     command.Parameters.AddWithValue("@FirstName", students.FirstName);
                     command.Parameters.AddWithValue("@LastName", students.LastName);
                     command.Parameters.AddWithValue("@PhoneNumber", students.PhoneNumber);
                     command.Parameters.AddWithValue("@StudentClass", students.StudentClass);
-                    command.Parameters.AddWithValue("@RoomId", students.RoomId != 0 ? students.RoomId : (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@RoomId", room.RoomId); // Pass the first room's RoomId
 
                     try
                     {
                         connection.Open(); // Open the connection
                         int nrOfRowsAffected = command.ExecuteNonQuery();
-
-                        //  Optional: Log success
-                        Console.WriteLine($"Rows affected: {nrOfRowsAffected}");
 
                         if (nrOfRowsAffected != 1)
                         {
@@ -121,14 +180,10 @@ namespace someren_application.Repositories
                     }
                     catch (SqlException ex)
                     {
-                        // ✅ Log SQL-specific errors
-                        Console.WriteLine($"SQL Error: {ex.Message}");
                         throw new Exception("Database error occurred while adding student.", ex);
                     }
                     catch (Exception ex)
                     {
-                        // ✅ Log any other error
-                        Console.WriteLine($"General Error: {ex.Message}");
                         throw new Exception("Something went wrong while adding student.", ex);
                     }
                 }
