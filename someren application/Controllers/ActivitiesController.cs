@@ -88,7 +88,7 @@ namespace someren_application.Controllers
                 //go back to user list(via Index)
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //something went wrong, go back to view with user
                 return View(activities);

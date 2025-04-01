@@ -7,7 +7,7 @@
 <div>
     <h1>Edit Room</h1>
     <form action="/Room/Edit" method="post">
-        <input hidden asp-for="RoomId" />
+        <input type="hidden" asp-for="RoomId" />
         <div class="for-group py-2">
             <label asp-for="RoomNumber"></label>
             <input asp-for="RoomNumber" class="form-control" required />

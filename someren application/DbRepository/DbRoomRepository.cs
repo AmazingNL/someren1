@@ -1,8 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using someren_application.Repositories;
 using System.Data;
 
-namespace someren_application.Repositories
+namespace someren_application.DbRepository
 {
     public class DbRoomRepository : IRoomRepository
     {
@@ -53,8 +54,8 @@ namespace someren_application.Repositories
         {
             // Check if the roomType is allowed in the building
             // You can modify this logic to match your exact requirements.
-            if ((room.Building == "A" && room.RoomType == "Lecturer" && room.Capacity == 1) || (room.Building == "A" && room.RoomType == "Student" && room.Capacity == 8)
-                || (room.Building == "B" && room.RoomType == "Student" && room.Capacity == 8))
+            if (room.Building == "A" && room.RoomType == "Lecturer" && room.Capacity == 1 || room.Building == "A" && room.RoomType == "Student" && room.Capacity == 8
+                || room.Building == "B" && room.RoomType == "Student" && room.Capacity == 8)
             {
                 return true; 
             }
@@ -62,29 +63,6 @@ namespace someren_application.Repositories
             return false; // If no restriction, return true (allow the combination)
         }
 
-        private int IsStudentRoomFull(Room room)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND capacity = 8";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
-
-                    try
-                    {
-                        connection.Open();
-                        int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
-                        return count;  // return number of roomNumber
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception($"error checking if room count");
-                    }
-                }
-            }
-        }
 
         private bool IsRoomNumberExist(Room room)
         {
@@ -122,10 +100,10 @@ namespace someren_application.Repositories
             {
                 throw new Exception("Lecturer can only stay in Building A");
             }
-            else if(IsStudentRoomFull(room) == 8)
-            {
-                throw new Exception($"{room.RoomNumber} is full add to another room");
-            }
+            //else if(IsStudentRoomFull(room) == 8)
+            //{
+            //    throw new Exception($"{room.RoomNumber} is full add to another room");
+            //}
             else
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -168,13 +146,22 @@ namespace someren_application.Repositories
                 {
                     command.Parameters.AddWithValue("@RoomId", room.RoomId);
 
-                    connection.Open();
-                    int nrOfRowsAffected = command.ExecuteNonQuery();
-
-                    if (nrOfRowsAffected == 0)
+                    try
                     {
-                        throw new Exception("No records deleted!");
+                        connection.Open();
+                        int nrOfRowsAffected = command.ExecuteNonQuery();
+
+                        if (nrOfRowsAffected == 0)
+                        {
+                            throw new Exception("No records deleted!");
+                        }
                     }
+                    catch (Exception)
+                    {
+
+                        throw new Exception("Something went wrong with deleting from database");
+                    }
+
                 }
             }
         }
@@ -182,11 +169,11 @@ namespace someren_application.Repositories
 
         List<Room> IRoomRepository.GetAll()
         {
-            List<Room> rooms = [];
+            List<Room> rooms = new List<Room>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM [room] ORDER BY roomNumber";
+                string query = "SELECT roomId, building, roomNumber, capacity, roomType FROM [room] ORDER BY roomNumber";
                 SqlCommand command = new SqlCommand(query, connection);
                 try
                 {
@@ -195,8 +182,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Room room = ReadRoom(reader);
-                            rooms.Add(room);
+                            rooms.Add(ReadRoom(reader));
                         }
                     }
                 }
@@ -223,7 +209,7 @@ namespace someren_application.Repositories
             string roomNumber = (string)reader["roomNumber"];
             int capacity = (int)reader["capacity"];
             string roomType = (string)reader["roomType"];
-            // Return new User object
+            // Return new Room object
             return new Room(roomId, building, roomNumber, capacity, roomType);
         }
 

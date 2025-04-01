@@ -34,7 +34,6 @@ namespace someren_application.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult Create()
         {

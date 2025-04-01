@@ -1,12 +1,8 @@
 ﻿@model someren_application.Models.Students
-<<<<<<< HEAD
-=======
 
->>>>>>> af0e5d0f9cba3bbfd02b5d489fa1da833c53b166
 
 @{
     ViewBag.Title = "Create Student";
-    List<someren_application.Models.Room> rooms = ViewBag.Rooms;
 }
 
 <form method="post" asp-controller="Students" asp-action="Create" onsubmit="alert('New student added');">
@@ -47,15 +43,22 @@
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="RoomId" class="p-0"></label>
-            <select asp-for="RoomId" class="form-select">
-                <option value="">Pick a room</option>
-                @foreach (var room in rooms)
-                {
-                    <option value="@room.RoomId">@room.RoomNumber - @room.Building</option>
-                }
-            </select>
-            <span asp-validation-for="RoomId" class="text-danger"></span>
+            <label for="roomSelect" class="form-label">Student Details</label>
+            @if (Model.Rooms.Any())
+            {
+                <select asp-for="Rooms[0].RoomId" class="form-select hover-animate" id="roomSelect">
+                    <option value="">Select a Room</option>
+                    @foreach (var room in Model.Rooms)
+                    {
+                        <option value="@room.RoomId">@room.RoomNumber - @room.Building - @room.RoomType - @room.Capacity</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <p>No Room available. Please add Room first.</p>
+            }
+            <span asp-validation-for="Rooms[0].RoomId" class="text-danger"></span>
         </div>
 
         <div class="row">

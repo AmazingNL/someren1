@@ -1,0 +1,45 @@
+﻿@model someren_application.Models.Drinks
+
+@{
+    ViewData["Title"] = "Add Drinks";
+}
+
+<form method="post" asp-controller="Drinks" asp-action="Create" onsubmit="alert('Form submitted!');">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">
+                ADD DRINKS
+            </h2>
+            <hr />
+        </div>
+@*         <input type="hidden" asp-for=" atRate" class="form-control" /> *@
+        <div class="mb-3 row">
+            <label asp-for="DrinkName" class="p-0"></label>
+            <input asp-for="DrinkName" class="form-control" />
+            <span asp-validation-for="DrinkName" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="IsAlcoholic" class="p-0"></label>
+            <div>
+                <input type="radio" asp-for="IsAlcoholic" value="Alcoholic" /> Alcoholic
+                <input type="radio" asp-for="IsAlcoholic" value="Non-Alcoholic" /> Non-Alcoholic
+            </div>
+            <span asp-validation-for="IsAlcoholic" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Quantity" class="p-0"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-6 col-mid-3">
+                <button type="submit" class="btn btn-primary form-control">Create</button>
+            </div>
+            <div class="col col-mid-3">
+                <a asp-controller="Drinks" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                    Back To Drinks
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
