@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.IRepositories;
 using someren_application.Models;
-using someren_application.Repositories;
 using System.Data;
 using System.Security.Claims;
 
@@ -52,7 +51,8 @@ namespace someren_application.DbRepository
             {
                 string query = "UPDATE [orderDrinks] SET studentId = @StudentId, drinkId = @DrinkId, totalDrink = @TotalDrink WHERE orderId = @OrderId";
                 SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@OrderId", orderDrinks.OrderId);
+                command.Parameters.AddWithValue("@orderId", orderDrinks.OrderId);
+                command.Parameters.AddWithValue("@totalDrink", orderDrinks.TotalDrink);
                 command.Parameters.AddWithValue("@StudentId", orderDrinks.Students.FirstOrDefault());
                 command.Parameters.AddWithValue("@DrinkId", orderDrinks.Drinks.FirstOrDefault());
                 try
@@ -176,10 +176,6 @@ namespace someren_application.DbRepository
                 {
                     throw new Exception("Database error while retrieving orders", ex);
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Data reading error while retrieving orders", ex);
-                }
             }
 
             return orders;
@@ -193,7 +189,7 @@ namespace someren_application.DbRepository
             {
                 new Students
                 {
-                    StudentId = (int)reader["studentId"],
+                    StudentId = Convert.ToInt32(reader["studentId"]),
                     StudentNumber = (string)reader["studentNumber"],
                     FirstName = (string)reader["firstName"],
                     LastName = (string)reader["lastName"],
@@ -203,7 +199,7 @@ namespace someren_application.DbRepository
                     {
                         new Room
                         {
-                            RoomId = (int)reader["roomId"],
+                            RoomId = Convert.ToInt32(reader["roomId"]),
                             //Building = (string)reader["building"],
                             //RoomNumber = (string)reader["roomNumber"],
                             //Capacity = (int)reader["capacity"],
@@ -216,11 +212,11 @@ namespace someren_application.DbRepository
             {
                 new Drinks
                 {
-                    DrinkId = (int)reader["drinkId"],
+                    DrinkId = Convert.ToInt32(reader["drinkId"]),
                     DrinkName = (string)reader["drinkName"],
                     IsAlcoholic = (string)reader["isAlcoholic"],
-                    VatRate = (int)reader["vatRate"],
-                    Quantity = (int)reader["quantity"]
+                    VatRate = Convert.ToInt32(reader["vatRate"]),
+                    Quantity = Convert.ToInt32(reader["quantity"])
                 }
             };
 

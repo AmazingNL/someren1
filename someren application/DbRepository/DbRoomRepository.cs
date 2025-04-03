@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using someren_application.IRepositories;
 using someren_application.Models;
-using someren_application.Repositories;
 using System.Data;
 
 namespace someren_application.DbRepository
@@ -50,61 +50,61 @@ namespace someren_application.DbRepository
             return rooms;
         }
 
-        private bool IsRoomTypeAllowedInBuilding(Room room)
-        {
-            // Check if the roomType is allowed in the building
-            // You can modify this logic to match your exact requirements.
-            if (room.Building == "A" && room.RoomType == "Lecturer" && room.Capacity == 1 || room.Building == "A" && room.RoomType == "Student" && room.Capacity == 8
-                || room.Building == "B" && room.RoomType == "Student" && room.Capacity == 8)
-            {
-                return true; 
-            }
+        //private bool IsRoomTypeAllowedInBuilding(Room room)
+        //{
+        //    // Check if the roomType is allowed in the building
+        //    // You can modify this logic to match your exact requirements.
+        //    if (room.Building == "A" && room.RoomType == "Lecturer" && room.Capacity == 1 || room.Building == "A" && room.RoomType == "Student" && room.Capacity == 8
+        //        || room.Building == "B" && room.RoomType == "Student" && room.Capacity == 8)
+        //    {
+        //        return true; 
+        //    }
 
-            return false; // If no restriction, return true (allow the combination)
-        }
+        //    return false; // If no restriction, return true (allow the combination)
+        //}
 
 
-        private bool IsRoomNumberExist(Room room)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND roomType = 'Lecturer'";
+        //private bool IsRoomNumberExist(Room room)
+        //{
+        //    using (SqlConnection connection = new SqlConnection(_connectionString))
+        //    {
+        //        string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND roomType = 'Lecturer'";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
+        //        using (SqlCommand command = new SqlCommand(query, connection))
+        //        {
+        //            command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
 
-                    try
-                    {
-                        connection.Open();
-                        int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
+        //            try
+        //            {
+        //                connection.Open();
+        //                int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
 
-                        return count > 0;  // If count > 0, it means the roomNumber exists
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("Error checking if roomNumber exists");
-                    }
-                }
-            }
-        }
+        //                return count > 0;  // If count > 0, it means the roomNumber exists
+        //            }
+        //            catch (Exception)
+        //            {
+        //                throw new Exception("Error checking if roomNumber exists");
+        //            }
+        //        }
+        //    }
+        //}
 
 
         void IRoomRepository.Add(Room room)
         {
-            if (IsRoomNumberExist(room)) 
-            {
-                throw new Exception("Room name already exists!");
-            }
-            else if (!IsRoomTypeAllowedInBuilding(room))
-            {
-                throw new Exception("Lecturer can only stay in Building A");
-            }
-            //else if(IsStudentRoomFull(room) == 8)
+            //if (IsRoomNumberExist(room)) 
             //{
-            //    throw new Exception($"{room.RoomNumber} is full add to another room");
+            //    throw new Exception("Room name already exists!");
             //}
-            else
+            //else if (!IsRoomTypeAllowedInBuilding(room))
+            //{
+            //    throw new Exception("Lecturer can only stay in Building A");
+            //}
+            ////else if(IsStudentRoomFull(room) == 8)
+            ////{
+            ////    throw new Exception($"{room.RoomNumber} is full add to another room");
+            ////}
+            //else
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
 

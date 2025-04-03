@@ -127,8 +127,7 @@ namespace someren_application.DbRepository
                     {
                         while (reader.Read())
                         {
-                            Drinks drink = ReadDrink(reader);
-                            drinks.Add(drink);
+                            drinks.Add(ReadDrink(reader));
                         }
                     }
                 }
@@ -165,7 +164,7 @@ namespace someren_application.DbRepository
             {
                 string query = "SELECT drinkId, drinkName, isAlcoholic, vatRate, quantity FROM [drinks] WHERE drinkId = @DrinkId"; // search for the drink and return its record
                 SqlCommand command = new(query, connection);
-                command.Parameters.Add("@DrinkId", SqlDbType.Int).Value = drinkId;
+                command.Parameters.AddWithValue("@DrinkId", drinkId);
 
                 try
                 {

@@ -1,4 +1,6 @@
-﻿namespace someren_application.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace someren_application.Models
 {
     public class OrderDrinks
     {
@@ -20,7 +22,10 @@
         public int OrderId { get; set; }
         public List<Students> Students { get; set; }
         public List<Drinks> Drinks { get; set; }
+        [Required(ErrorMessage = "Total Drink is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Total Drink must be greater than 0.")]
         public int TotalDrink { get; set; }
+
 
     }
 }

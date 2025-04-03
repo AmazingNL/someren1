@@ -33,14 +33,13 @@
         @{
             foreach (Students student in Model)
             {
-
                 <tr>
                     <td>@student.StudentNumber</td>
                     <td>@student.FirstName</td>
                     <td>@student.LastName</td>
                     <td>@student.PhoneNumber</td>
                     <td>@student.StudentClass</td>
-                    <td>@student.Rooms[0].RoomNumber</td>
+                    <td>@student.Rooms[0]?.RoomNumber</td>
                     
                     <td>
                         <div class="w-75 btn-group" role="group">

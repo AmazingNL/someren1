@@ -1,54 +1,41 @@
 ﻿@model someren_application.Models.Students
 
-<form method="post" asp-controller="Students" asp-action="Delete" onsubmit="Student deleted;">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">
-                Delete Student
-            </h2>
-            <hr />
-        </div>
 
-   @*      Field are readonly because the user has no need to edit *@
-        <div class="mb-3 row">
-            <label asp-for="StudentId" class="p-0"></label>
-            <input asp-for="StudentId" type="hidden" class="form-control" />
-            <span asp-validation-for="StudentId" class="text-danger"></span>
+<div>
+    <h1>Delete Room</h1>
+
+    <div class="form-group py-2">
+        <label>Student Number:</label>
+        <p>@Model.StudentNumber</p> <!-- Display Room Number -->
+    </div>
+    <div class="form-group py-2">
+        <label>First Name:</label>
+        <p>@Model.FirstName</p> <!-- Display Room Type -->
+    </div>
+    <div class="form-group py-2">
+        <label>Last Name:</label>
+        <p>@Model.LastName</p> <!-- Display Room Capacity -->
+    </div>
+    <div class="form-group py-2">
+        <label>Phone Number:</label>
+        <p>@Model.PhoneNumber</p> <!-- Display Room Building -->
+    </div>
+    <div class="form-group py-2">
+        <label>Student Class:</label>
+        <p>@Model.StudentClass</p> <!-- Display Room Building -->
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <!-- Delete Confirmation Form with POST request -->
+            <form asp-controller="Students" asp-action="Delete" method="post">
+                <input type="hidden" asp-for="StudentId" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
         </div>
-        <div class="mb-3 row">
-            <label asp-for="StudentNumber" class="p-0"></label>
-            <input asp-for="StudentNumber" class="form-control" readonly />
-            <span asp-validation-for="StudentNumber" class="text-danger"></span>
-        </div>
-        <div class="mb-3 row">
-            <label asp-for="FirstName" class="p-0"></label>
-            <input asp-for="FirstName" class="form-control" readonly />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
-        <div class="mb-3 row">
-            <label asp-for="LastName" class="p-0"></label>
-            <input asp-for="LastName" class="form-control" readonly />
-            <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
-        <div class="mb-3 row">
-            <label asp-for="PhoneNumber" class="p-0"></label>
-            <input asp-for="PhoneNumber" class="form-control" readonly />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
-        <div class="mb-3 row">
-            <label asp-for="StudentClass" class="p-0"></label>
-            <input asp-for="StudentClass" class="form-control" readonly />
-            <span asp-validation-for="StudentClass" class="text-danger"></span>
-        </div>
-        <div class="row">
-            <div class="col-6 col-mid-3">
-                <button type="submit" class="btn btn-danger form-control">Delete</button>
-            </div>
-            <div class="col col-mid-3">
-                <a asp-controller="Students" asp-action="Index" class="btn btn-outline-secondary border form-control">
-                    Back To Students
-                </a>
-            </div>
+        <div class="col-3">
+            <a asp-controller="Students" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                Back To User
+            </a>
         </div>
     </div>
-</form>
+</div>

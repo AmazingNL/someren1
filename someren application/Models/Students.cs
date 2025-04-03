@@ -23,7 +23,7 @@ namespace someren_application.Models
             Rooms = new List<Room>();
         }
 
-        public Students(int studentId, string studentNumber, string firstName, string lastName, string phoneNumber, string studentClass, List<Room> room)
+        public Students(int studentId, string studentNumber, string firstName, string lastName, string phoneNumber, string studentClass, List<Room> rooms)
         {
             StudentId = studentId;
             StudentNumber = studentNumber;
@@ -31,7 +31,7 @@ namespace someren_application.Models
             LastName = lastName;
             PhoneNumber = phoneNumber;
             StudentClass = studentClass;
-            Rooms = room;
+            Rooms = rooms;
     
         }
     }

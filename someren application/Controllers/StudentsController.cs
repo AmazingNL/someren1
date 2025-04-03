@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using someren_application.Models;
-using someren_application.Repositories;
+//using someren_application.Repositories;
+using someren_application.IRepositories;
+using someren_application.DbRepository;
 
 namespace someren_application.Controllers
 {
@@ -27,12 +29,6 @@ namespace someren_application.Controllers
             // Fetch room from the repository
             var rooms = _roomRepository.GetAll() ?? new List<Room>();
 
-            // Check if lists are empty, and return an error or redirect
-            if (!rooms.Any())
-            {
-                TempData["ErrorMessage"] = "No room available. Please add room before creating an student.";
-            }
-
             // Create the view model and pass it to the view
             var viewModel = new Students
             {
@@ -45,15 +41,31 @@ namespace someren_application.Controllers
         [HttpPost]
         public IActionResult Create(Students student)
         {
-            try
+            var room = _roomRepository.GetById(student.Rooms[0].RoomId);
+            if (room == null)
             {
-                _studentsRepository.Add(student);  // Add student to database
-                return RedirectToAction("Index");  // Redirect after successful addition
+                return RedirectToAction("Create");
             }
-            catch (Exception)
+            //student.Rooms[0] = room;  // Assign the selected room to the student
+            var newStudent = new Students
             {
-                return View(student);  // Return the student object with validation errors
-            }
+                StudentNumber = student.StudentNumber,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                PhoneNumber = student.PhoneNumber,
+                StudentClass = student.StudentClass,
+                Rooms = new List<Room> { room }  // Assign the selected room to the student
+            };
+            _studentsRepository.Add(newStudent);  // Add student to database
+            return RedirectToAction("Index");  // Redirect after successful addition
+            //try
+            //{
+
+            //}
+            //catch (Exception)
+            //{
+            //    return View(student);  // Return the student object with validation errors
+            //}
         }
 
 

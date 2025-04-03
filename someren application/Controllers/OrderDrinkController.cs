@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using someren_application.DbRepository;
 using someren_application.IRepositories;
 using someren_application.Models;
-using someren_application.Repositories;
 
 namespace someren_application.Controllers
 {
     public class OrderDrinkController : Controller
     {
         private readonly IOrderDrinkRepository _orderDrinkRepository;
-        private readonly IStudentsRepository _studentsRepository;
         private readonly IDrinksRepository _drinksRepository;
+        private readonly IStudentsRepository _studentsRepository;
 
         public OrderDrinkController(IOrderDrinkRepository orderDrinkRepository, IStudentsRepository studentsRepository, IDrinksRepository drinksRepository)
         {
@@ -31,73 +29,75 @@ namespace someren_application.Controllers
             var students = _studentsRepository.GetAllStudent() ?? new List<Students>();
             var drinks = _drinksRepository.GetAllDrink() ?? new List<Drinks>();
 
-            // Check if lists are empty, and return an error or redirect
-            if (!students.Any())
-            {
-                TempData["ErrorMessage"] = "No students available. Please add students before creating an order.";
-            }
-
-            if (!drinks.Any())
-            {
-                TempData["ErrorMessage"] = "No drinks available. Please add drinks before creating an order.";
-            }
-
             // Create the view model and pass it to the view
             var viewModel = new OrderDrinks
             {
                 Students = students,
-                Drinks = drinks
+                Drinks = drinks,
             };
 
             return View(viewModel);
         }
 
 
+        // Action to handle the confirmation page after the form is submitted
         [HttpPost]
-        public IActionResult Create(OrderDrinks order)
+        public IActionResult CreateConfirm(OrderDrinks order)
         {
             try
             {
-                // Ensure that the TotalDrink is valid
-                if (order.TotalDrink <= 0)
+                // Fetch the selected student and drink based on IDs
+                var selectedStudent = _studentsRepository.GetStudentsById(order.Students[0].StudentId);
+                var selectedDrink = _drinksRepository.GetById(order.Drinks[0].DrinkId);
+                var totalDrink = order.TotalDrink;
+
+                // Check for null references
+                if (selectedStudent == null || selectedDrink == null)
                 {
-                    ModelState.AddModelError("TotalDrink", "The quantity of drinks must be greater than zero.");
-                    return View(order);
+                    return RedirectToAction("Create");
                 }
 
-                // Get the list of all drinks
-                Drinks? drink = _drinksRepository.GetById(order.Drinks[0].DrinkId);
+                // Process the order if everything is valid
+                selectedDrink.Quantity -= totalDrink; // Update stock
+                _drinksRepository.Update(selectedDrink); // Persist changes
 
-                // Check if the selected drink exists and has enough quantity
-                if (drink != null && drink.Quantity >= order.TotalDrink)
+                // Create a view model to pass to the confirmation page
+                var confirmationModel = new OrderDrinks
                 {
-                    // Update the drink quantity
-                    drink.Quantity -= order.TotalDrink;
-                    _drinksRepository.Update(drink);  // This would persist the updated drink quantity
+                    Students = new List<Students> { selectedStudent },
+                    Drinks = new List<Drinks> { selectedDrink },
+                    TotalDrink = totalDrink,
+                };
+                _orderDrinkRepository.AddOrder(confirmationModel); // Save the new order
 
-                    // Create a new order entry
-                    var newOrder = new OrderDrinks
-                    {
-                        Students = order.Students,
-                        Drinks = order.Drinks,
-                        TotalDrink = order.TotalDrink
-                    };
-                    _orderDrinkRepository.AddOrder(newOrder);
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Insufficient stock for the selected drink.");
-                    return View(order);
-                }
+                // Successfully processed, redirect to an index or order list page
+                return View(confirmationModel); // Show confirmation page
             }
             catch (Exception)
             {
-                return View(order);
+                return RedirectToAction("Create");
             }
         }
 
 
+        // Action to handle the actual creation of the order
+        [HttpPost]
+        public IActionResult CreateConfirmed(OrderDrinks order)
+        {
+            ////Fetch the selected drink and student from repositories
+            //var selectedDrink = _drinksRepository.GetById(order.Drinks[0].DrinkId);
+            //var selectedStudent = _studentsRepository.GetStudentsById(order.Students[0].StudentId);
+            //var totalDrink = order.TotalDrink;
+            //var confirmationModel = new OrderDrinks
+            //{
+            //    Students = order.Students,
+            //    Drinks = order.Drinks,
+            //    TotalDrink = order.TotalDrink,
+            //};
+
+            // Successfully processed, redirect to an index or order list page
+            return RedirectToAction("Index");
+        }
 
         //Get user
         [HttpGet]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using someren_application.Repositories;
 using someren_application.Models;
+using someren_application.IRepositories;
 namespace someren_application.Controllers
 {
     public class RoomController : Controller

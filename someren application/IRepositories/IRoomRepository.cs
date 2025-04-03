@@ -1,6 +1,6 @@
 ﻿using someren_application.Models;
 
-namespace someren_application.Repositories
+namespace someren_application.IRepositories
 {
     public interface IRoomRepository 
     {

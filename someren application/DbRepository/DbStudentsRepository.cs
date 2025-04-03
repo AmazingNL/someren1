@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using someren_application.IRepositories;
 using someren_application.Models;
-using someren_application.Repositories;
 using System.Collections.Generic;
 using System.Data;
 
@@ -22,7 +22,7 @@ namespace someren_application.DbRepository
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT S.studentId, S.studentNumber, S.firstName, S.lastName, S.phoneNumber," +
+                string query = @"SELECT S.studentId, S.studentNumber, S.firstName, S.lastName, S.phoneNumber," +
                     " S.studentClass, R.roomId, R.building, R.roomNumber, R.roomType, R.capacity " +
                     "FROM [student] AS S JOIN [room] AS R ON S.roomId = R.roomId ";
                 SqlCommand command = new SqlCommand(query, connection);
@@ -39,8 +39,6 @@ namespace someren_application.DbRepository
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Exception: {ex.Message}");  // Log the exception message
-                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");  // Log the stack trace
                     throw new Exception("Error while fetching students with rooms.", ex);
                 }
             }
@@ -48,12 +46,12 @@ namespace someren_application.DbRepository
         }
             
 
-        Students? IStudentsRepository.GetStudentsById(int studentId)
+        Students IStudentsRepository.GetStudentsById(int studentId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string query = "SELECT S.studentId, S.studentNumber, S.firstName, S.lastName, " +
-                    "S.phoneNumber, S.studentClass, R.roomId, R.building, R.roomNumber," +
+                    "S.phoneNumber, S.studentClass, S.roomId, R.roomId, R.building, R.roomNumber," +
                     " R.roomType, R.capacity " +
                     "FROM [student] AS S JOIN [room] AS R ON S.roomId = R.roomId" +
                     " WHERE S.[studentId] = @StudentId ";
@@ -66,86 +64,75 @@ namespace someren_application.DbRepository
                 {
                     if (reader.Read()) // If a record is found
                     {
-                        ReadStudent(reader);
+                        return ReadStudent(reader);
                     }
                 }
             }
-            return null; // Return null if no student is found
+            throw new Exception("student not found"); // Return null if no student is found
         }
 
         private Students ReadStudent(SqlDataReader reader)
         {
             // Retrieve data from room table
-            int studentId = (int)reader["studentId"];
+            List<Room> room = new List<Room> // Changed from Room to List<Room>
+            {
+                new Room
+                {
+                    RoomId = Convert.ToInt32(reader["roomId"]),
+                    Building = (string)reader["building"],
+                    RoomNumber = (string)reader["roomNumber"],
+                    RoomType = (string)reader["roomType"],
+                    Capacity = Convert.ToInt32(reader["capacity"])
+                }
+            };
+            int studentId = Convert.ToInt32(reader["studentId"]);
             string studentNumber = (string)reader["studentNumber"];
             string firstName = (string)reader["firstName"];
             string lastName = (string)reader["lastName"];
             string phoneNumber = (string)reader["phoneNumber"];
             string studentClass = (string)reader["studentClass"];
-            int roomId = (int)reader["roomId"];
-            string building = (string)reader["building"];
-            string roomNumber = (string)reader["roomNumber"];
-            int capacity = (int)reader["capacity"];
-            string roomType = (string)reader["roomType"];
             // Return new Room object
-            return new Students
-            {
-                StudentId = studentId,
-                StudentNumber = studentNumber,
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phoneNumber,
-                StudentClass = studentClass,
-                Rooms = new List<Room> // Changed from Room to List<Room>
-                {
-                    new Room
-                    {
-                        RoomId = roomId,
-                        Building = building,
-                        RoomNumber = roomNumber,
-                        Capacity = capacity,
-                        RoomType = roomType
-                    }
-                }
-            };
+            return new Students(studentId, studentNumber, firstName, lastName, phoneNumber, studentClass, room);
         }
 
-        private int IsStudentRoomFull(Room room)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND capacity = 8";
+        //private int IsStudentRoomFull(Room room)
+        //{
+        //    using (SqlConnection connection = new SqlConnection(_connectionString))
+        //    {
+        //        string query = "SELECT COUNT(*) FROM [room] WHERE roomNumber = @RoomNumber AND capacity = 8";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
+        //        using (SqlCommand command = new SqlCommand(query, connection))
+        //        {
+        //            command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
 
-                    try
-                    {
-                        connection.Open();
-                        int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
-                        return count;  // return number of roomNumber
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception($"error checking if room count");
-                    }
-                }
-            }
-        }
+        //            try
+        //            {
+        //                connection.Open();
+        //                int count = (int)command.ExecuteScalar();  // Executes the query and returns the count
+        //                return count;  // return number of roomNumber
+        //            }
+        //            catch (Exception)
+        //            {
+        //                throw new Exception($"error checking if room count");
+        //            }
+        //        }
+        //    }
+        //}
 
-        public void Add(Students students)
+        //if (room == null)
+        //{
+        //    throw new Exception("Student must be assigned to a room.");
+        //}
+
+        //if (IsStudentRoomFull(room) == 8) // Pass the first room in the list
+        //{
+        //    throw new Exception("Room is full");
+        //}
+
+        void IStudentsRepository.Add(Students students)
         {
    
-            //if (room == null)
-            //{
-            //    throw new Exception("Student must be assigned to a room.");
-            //}
 
-            //if (IsStudentRoomFull(room) == 8) // Pass the first room in the list
-            //{
-            //    throw new Exception("Room is full");
-            //}
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -160,7 +147,7 @@ namespace someren_application.DbRepository
                     {
                         throw new InvalidOperationException("No student selected.");
                     }
-                    // Parameters with correct casing
+
                     command.Parameters.AddWithValue("@StudentNumber", students.StudentNumber);
                     command.Parameters.AddWithValue("@FirstName", students.FirstName);
                     command.Parameters.AddWithValue("@LastName", students.LastName);
@@ -177,14 +164,11 @@ namespace someren_application.DbRepository
                         {
                             throw new Exception("Adding student failed!");
                         }
+
                     }
                     catch (SqlException ex)
                     {
                         throw new Exception("Database error occurred while adding student.", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("Something went wrong while adding student.", ex);
                     }
                 }
             }
@@ -192,7 +176,7 @@ namespace someren_application.DbRepository
 
 
 
-        public void Delete(Students students)
+        void IStudentsRepository.Delete(Students students)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -201,19 +185,27 @@ namespace someren_application.DbRepository
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@StudentId", students.StudentId);
-
-                    connection.Open();
-                    int nrOfRowsAffected = command.ExecuteNonQuery();
-
-                    if (nrOfRowsAffected == 0)
+                    try
                     {
-                        throw new Exception("No records deleted!");
+                        connection.Open();
+                        int nrOfRowsAffected = command.ExecuteNonQuery();
+
+                        if (nrOfRowsAffected == 0)
+                        {
+                            throw new Exception("No records deleted!");
+                        }
                     }
+                    catch (Exception)
+                    {
+
+                        throw new Exception("Something went wrong with deleting from database");
+                    }
+
                 }
             }
         }
 
-        public void Edit(Students students)
+        void IStudentsRepository.Edit(Students students)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

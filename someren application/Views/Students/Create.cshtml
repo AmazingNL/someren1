@@ -2,7 +2,7 @@
 
 
 @{
-    ViewBag.Title = "Create Student";
+    ViewData["Title"] = "Create Student";
 }
 
 <form method="post" asp-controller="Students" asp-action="Create" onsubmit="alert('New student added');">
@@ -13,51 +13,44 @@
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="StudentNumber" class="p-0"></label>
-            <input asp-for="StudentNumber" class="form-control" />
+            <label asp-for="StudentNumber" class="p-0">Student Number</label>
+            <input asp-for="StudentNumber" class="form-control"  />
             <span asp-validation-for="StudentNumber" class="text-danger"></span>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="FirstName" class="p-0"></label>
+            <label asp-for="FirstName" class="p-0">First Name</label>
             <input asp-for="FirstName" class="form-control" />
             <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="LastName" class="p-0"></label>
-            <input asp-for="LastName" class="form-control" />
+            <label asp-for="LastName" class="p-0">Last Name</label>
+            <input asp-for="LastName" class="form-control"  />
             <span asp-validation-for="LastName" class="text-danger"></span>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="PhoneNumber" class="p-0"></label>
+            <label asp-for="PhoneNumber" class="p-0">Phone Number</label>
             <input asp-for="PhoneNumber" class="form-control" />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="StudentClass" class="p-0"></label>
-            <input asp-for="StudentClass" class="form-control" />
+            <label asp-for="StudentClass" class="p-0">Student Class</label>
+            <input asp-for="StudentClass" class="form-control"/>
             <span asp-validation-for="StudentClass" class="text-danger"></span>
         </div>
 
         <div class="mb-3 row">
-            <label for="roomSelect" class="form-label">Student Details</label>
-            @if (Model.Rooms.Any())
-            {
-                <select asp-for="Rooms[0].RoomId" class="form-select hover-animate" id="roomSelect">
-                    <option value="">Select a Room</option>
-                    @foreach (var room in Model.Rooms)
-                    {
-                        <option value="@room.RoomId">@room.RoomNumber - @room.Building - @room.RoomType - @room.Capacity</option>
-                    }
-                </select>
-            }
-            else
-            {
-                <p>No Room available. Please add Room first.</p>
-            }
+            <label asp-for="Rooms[0].RoomId" class="form-label">Room Details</label>
+            <select asp-for="Rooms[0].RoomId" class="form-select hover-animate">
+                <option value="">Select a Room</option>
+                @foreach (var room in Model.Rooms)
+                {
+                    <option value="@room.RoomId">@room.RoomNumber - @room.Building - @room.RoomType - @room.Capacity</option>
+                }
+            </select>
             <span asp-validation-for="Rooms[0].RoomId" class="text-danger"></span>
         </div>
 
@@ -74,3 +67,31 @@
     </div>
 </form>
 
+<style>
+    /* Hover effect for input and select elements */
+    .hover-animate {
+        transition: all 0.3s ease;
+    }
+
+        .hover-animate:hover {
+            border-color: #007bff; /* Change border color on hover */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
+        }
+
+    /* Hover effect for buttons */
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darken the primary button on hover */
+        border-color: #0056b3;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa; /* Lighten the secondary button on hover */
+        color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Hover effect for the links */
+    .btn-outline-secondary:hover {
+        text-decoration: none;
+    }
+</style>
