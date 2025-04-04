@@ -17,9 +17,30 @@ namespace someren_application.Controllers
         public IActionResult Index()
         {
             var students = _studentsRepository.GetAllStudents();
+
+            // trying to work on presenting room names instead of room id's
+            // 
+            //Dictionary<int, string> room = _studentsRepository.GetStudentsInRooms();
+            //ViewBag.Rooms = room;
             return View(students);
         }
-        
+
+        // filter students by last Name
+        [HttpPost]
+        public IActionResult Filter(string lastName)
+        {
+
+            try
+            {
+                List<Students> students = _studentsRepository.Filter(lastName);
+                return View(students);
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("Index");
+            }
+        }
 
         [HttpGet]
         public IActionResult Create()
@@ -30,6 +51,7 @@ namespace someren_application.Controllers
         [HttpPost]
         public IActionResult Create(Students students)
         {
+            // should be in the repository
             try
             {
                 _studentsRepository.Add(students);

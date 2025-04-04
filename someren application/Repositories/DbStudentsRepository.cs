@@ -30,6 +30,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read()) // If a record is found
                         {
+                            // Reads student data and returns it
                             students.Add(ReadUser(reader));
                         }
                     }
@@ -70,13 +71,15 @@ namespace someren_application.Repositories
                         );
                     }
                 }
+
+                // tyr and catch
             }
             return null; // Return null if no student is found
         }
 
         private Students ReadUser(SqlDataReader reader)
         {
-            // Retrieve data from room table
+            // Retrieve data from student & adds room Id table
             int studentId = (int)reader["studentId"];
             string studentNumber = (string)reader["studentNumber"];
             string firstName = (string)reader["firstName"];
@@ -84,7 +87,8 @@ namespace someren_application.Repositories
             string phoneNumber = (string)reader["phoneNumber"];
             string studentClass = (string)reader["studentClass"];
             int roomId = (int)reader["roomId"];
-            // Return new User object
+
+            // Return new Student object
             return new Students(studentId, studentNumber, firstName, lastName, phoneNumber, studentClass, roomId);
         }
 
@@ -110,24 +114,11 @@ namespace someren_application.Repositories
                     {
                         connection.Open(); // Open the connection
                         int nrOfRowsAffected = command.ExecuteNonQuery();
-
-                        //  Optional: Log success
-                        Console.WriteLine($"Rows affected: {nrOfRowsAffected}");
-
-                        if (nrOfRowsAffected != 1)
-                        {
-                            throw new Exception("Adding student failed!");
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        // ✅ Log SQL-specific errors
-                        Console.WriteLine($"SQL Error: {ex.Message}");
-                        throw new Exception("Database error occurred while adding student.", ex);
-                    }
+                       
+                    }                    
                     catch (Exception ex)
                     {
-                        // ✅ Log any other error
+                        // ✅ Log any error
                         Console.WriteLine($"General Error: {ex.Message}");
                         throw new Exception("Something went wrong while adding student.", ex);
                     }
@@ -178,17 +169,16 @@ namespace someren_application.Repositories
                 }
                 catch (Exception)
                 {
-
                     throw new Exception("No record updated!");
                 }
             }
         }
 
-        public List<Students> GetStudentsInRooms(int roomId)
+        public List<Students> Filter(string lastName)
         {
             throw new NotImplementedException();
         }
 
-      
+        
     }
 }

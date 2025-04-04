@@ -6,9 +6,9 @@ namespace someren_application.Models
     {
         public int StudentId { get; set; }
 
-        public Room? Room { get; set; }
-        public int RoomId { get; set; }
-
+        public int RoomId { get; set; }         
+        
+        public string RoomName { get; set; }
         public string StudentNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
