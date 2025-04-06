@@ -5,6 +5,13 @@ namespace someren_application.Models
     public class Activities
     {
 
+        private DateTime dateTime;
+
+        public string ActivityName { get; set; }
+        public int ActivityId { get; set; }
+        public DateTime TimeSlot { get; set; }
+
+
         public Activities()
         {
             ActivityName = "";
@@ -19,9 +26,7 @@ namespace someren_application.Models
             TimeSlot = timeSet;
         }
 
-        public string ActivityName { get; set; }
-        public int ActivityId { get; set; }
-        public DateTime TimeSlot { get; set; }
+       
     
     }
 }

@@ -39,6 +39,11 @@
                                 <a asp-controller="Activities" asp-action="Manage" asp-route-activityId="@activities.ActivityId" class="btn btn-primary mx-2 link-dark">
                                     <i class="bi bi-pencil-square"></i>Manage Activities
                                 </a>
+
+                                <a asp-controller="ActivitySupervisors" asp-action="ManageSupervisors" asp-route-activityId="@activities.ActivityId" class="btn btn-primary mx-2 link-dark">
+                                    <i class="bi bi-pencil-square"></i>Manage Supervision
+                                </a>
+
                             </div>
                         </td>
                     </tr>

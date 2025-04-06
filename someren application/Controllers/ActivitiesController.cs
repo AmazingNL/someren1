@@ -47,6 +47,7 @@ namespace someren_application.Controllers
             return View(activities);
         }
 
+
         [HttpPost]
         public IActionResult Edit(Activities activities)
         {

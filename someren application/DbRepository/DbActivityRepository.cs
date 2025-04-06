@@ -14,6 +14,9 @@ namespace someren_application.DbRepository
         {
             _connectionString = configuration.GetConnectionString("SomerenConnection");
         }
+
+
+
         List<Activities> IActivityRepository.GetAll()
         {
             List<Activities> activities = [];

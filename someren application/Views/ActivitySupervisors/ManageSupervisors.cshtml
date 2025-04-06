@@ -1,0 +1,72 @@
+﻿@model someren_application.Models.ActivitySupervisorsViewModel
+
+
+<div class="text-center">
+    <h1 class="display-4">@Model.ActivityName | Manage Supervisors</h1>
+    <p>Current Supervisors</p>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                @foreach (var lecturer in Model.Supervisors)
+                {
+                    <tr>
+                        <td>@lecturer.FirstName @lecturer.LastName</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="ActivitySupervisors" asp-action="RemoveSupervisor" asp-route-activityId="@Model.ActivityId" asp-route-lecturerId="@lecturer.LecturerID" class="btn btn-danger mx-2 link-primary">
+                                    <i class="bi bi-trash"></i>Remove
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+<h3>Available Lecturers to Add:</h3>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                @foreach (var lecturer in Model.NonSupervisors)
+                {
+                    <tr>
+                        <td>@lecturer.FirstName @lecturer.LastName</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="ActivitySupervisors" asp-action="AddSupervisor" asp-route-activityId="@Model.ActivityId" asp-route-lecturerId="@lecturer.LecturerID" class="btn btn-primary mx-2">
+                                    <i class="bi bi-trash"></i>Add
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
