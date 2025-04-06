@@ -1,0 +1,25 @@
+﻿@model someren_application.Models.ActivitySupervisorsViewModel
+
+<h2>@Model.ActivityName - Manage Supervisors</h2>
+
+<h3>Current Supervisors:</h3>
+<ul>
+    @foreach (var supervisor in Model.Supervisors)
+    {
+        <li>
+            @supervisor.FirstName @supervisor.LastName
+            <a href="@Url.Action("RemoveSupervisor", new { activityId = Model.ActivityId, lecturerId = supervisor.LecturerID })">Remove</a>
+        </li>
+    }
+</ul>
+
+<h3>Available Lecturers to Add:</h3>
+<ul>
+    @foreach (var lecturer in Model.NonSupervisors)
+    {
+        <li>
+            @lecturer.FirstName @lecturer.LastName
+            <a href="@Url.Action("AddSupervisor", new { activityId = Model.ActivityId, lecturerId = lecturer.LecturerID })">Add</a>
+        </li>
+    }
+</ul>
