@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using someren_application.Models;
 
-namespace someren_application.Repositories
+namespace someren_application.IRepositories
 {
     public interface IStudentsRepository
     {
-        List<Students> GetAllStudents();
-        Students? GetStudentsById (int studentID);
+        List<Students> GetAllStudent();
+        Students GetStudentsById (int studentID);
         void Add(Students students);
         void Edit(Students students);
         void Delete(Students students);

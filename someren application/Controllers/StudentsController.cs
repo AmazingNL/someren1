@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using someren_application.Models;
-using someren_application.Repositories;
+//using someren_application.Repositories;
+using someren_application.IRepositories;
+using someren_application.DbRepository;
 
 namespace someren_application.Controllers
 {
@@ -16,54 +18,56 @@ namespace someren_application.Controllers
 
         public IActionResult Index()
         {
-            var students = _studentsRepository.GetAllStudents();
-
-            // trying to work on presenting room names instead of room id's
-            // 
-            //Dictionary<int, string> room = _studentsRepository.GetStudentsInRooms();
-            //ViewBag.Rooms = room;
+            List<Students> students = _studentsRepository.GetAllStudent();
             return View(students);
         }
 
-        // filter students by last Name
-        [HttpPost]
-        public IActionResult Filter(string lastName)
-        {
-
-            try
-            {
-                List<Students> students = _studentsRepository.Filter(lastName);
-                return View(students);
-            }
-            catch (Exception)
-            {
-
-                return RedirectToAction("Index");
-            }
-        }
 
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Rooms = _roomRepository.GetAll();
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Create(Students students)
-        {
-            // should be in the repository
-            try
-            {
-                _studentsRepository.Add(students);
-                return RedirectToAction("Index");
-            }
+            // Fetch room from the repository
+            var rooms = _roomRepository.GetAll() ?? new List<Room>();
 
-            catch (Exception)
+            // Create the view model and pass it to the view
+            var viewModel = new Students
             {
-                ViewBag.Rooms = _roomRepository.GetAll();                
-                return View(students);
-            }
+                Rooms = rooms
+            };
+
+            return View(viewModel);
         }
+
+        [HttpPost]
+        public IActionResult Create(Students student)
+        {
+            var room = _roomRepository.GetById(student.Rooms[0].RoomId);
+            if (room == null)
+            {
+                return RedirectToAction("Create");
+            }
+            //student.Rooms[0] = room;  // Assign the selected room to the student
+            var newStudent = new Students
+            {
+                StudentNumber = student.StudentNumber,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                PhoneNumber = student.PhoneNumber,
+                StudentClass = student.StudentClass,
+                Rooms = new List<Room> { room }  // Assign the selected room to the student
+            };
+            _studentsRepository.Add(newStudent);  // Add student to database
+            return RedirectToAction("Index");  // Redirect after successful addition
+            //try
+            //{
+
+            //}
+            //catch (Exception)
+            //{
+            //    return View(student);  // Return the student object with validation errors
+            //}
+        }
+
 
         [HttpGet]
         public IActionResult Edit(int studentId)
@@ -117,3 +121,4 @@ namespace someren_application.Controllers
 
     }
 }
+

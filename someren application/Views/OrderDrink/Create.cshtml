@@ -1,0 +1,84 @@
+﻿@model someren_application.Models.OrderDrinks
+
+<form method="post" asp-controller="OrderDrink" asp-action="CreateConfirm" onsubmit="return confirm('Are you sure you want to submit this order?');">
+    <div class="container mt-5">
+        <div class="border p-5 shadow-lg rounded" style="min-height: 500px;">
+            <div class="row pb-4">
+                <h2 class="text-primary text-center">Create Order</h2>
+                <hr />
+            </div>
+
+            <div class="mb-4 row">
+                <div class="col-md-4">
+                    <label asp-for="Students[0].StudentId" class="form-label">Student Details</label>
+                    <select asp-for="Students[0].StudentId" class="form-select hover-animate" >
+                        <option value="">Select a Student</option>
+                        @foreach (var student in Model.Students)
+                        {
+                            <option value="@student.StudentId">@student.StudentNumber - @student.LastName - @student.FirstName - @student.Rooms[0].RoomNumber</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Students[0].StudentId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Students[0].StudentId" class="form-label">Drink Details</label>
+                    <select asp-for="Drinks[0].DrinkId" class="form-select hover-animate">
+                        <option value="">Select a Drink</option>
+                        @foreach (var drink in Model.Drinks)
+                        {
+                            <option value="@drink.DrinkId">@drink.DrinkName - @drink.IsAlcoholic - @drink.VatRate - @drink.Quantity</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Drinks[0].DrinkId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="TotalDrink" class="form-label">Total Drink</label>
+                    <input asp-for="TotalDrink" class="form-control hover-animate"/>
+                    <span asp-validation-for="TotalDrink" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mb-4 row justify-content-center">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 hover-animate">Submit Order</button>
+                </div>
+                <div class="col-md-3 mt-2 mt-md-0">
+                    <a asp-controller="OrderDrink" asp-action="Index" class="btn btn-outline-secondary w-100 hover-animate">
+                        Back To View Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+<style>
+    /* Hover effect for input and select elements */
+    .hover-animate {
+        transition: all 0.3s ease;
+    }
+
+        .hover-animate:hover {
+            border-color: #007bff; /* Change border color on hover */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
+        }
+
+    /* Hover effect for buttons */
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darken the primary button on hover */
+        border-color: #0056b3;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa; /* Lighten the secondary button on hover */
+        color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Hover effect for the links */
+    .btn-outline-secondary:hover {
+        text-decoration: none;
+    }
+</style>

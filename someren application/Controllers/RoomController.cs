@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using someren_application.Repositories;
 using someren_application.Models;
+using someren_application.IRepositories;
 namespace someren_application.Controllers
 {
     public class RoomController : Controller
@@ -33,7 +33,6 @@ namespace someren_application.Controllers
                 return RedirectToAction("Index");
             }
         }
-
 
         [HttpGet]
         public IActionResult Create()
@@ -103,7 +102,7 @@ namespace someren_application.Controllers
                 //go back to user list(via Index)
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 //something went wrong, go back to view with user
                 return View(room);

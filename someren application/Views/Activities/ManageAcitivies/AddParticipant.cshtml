@@ -1,0 +1,28 @@
+﻿
+
+<h2>Add Participant to @ViewBag.Activity.Name</h2>
+
+@* Display any confirmation or error message *@
+@if (!string.IsNullOrEmpty(ViewBag.Confirmation))
+{
+    <div class="alert alert-success">
+        @ViewBag.Confirmation
+    </div>
+}
+
+<form method="post" action="@Url.Action("AddParticipant", "Activity", new { activityId = ViewBag.Activity.ActivityId })">
+    <div class="form-group">
+        <label for="student">Select Student</label>
+        <select id="student" name="studentId" class="form-control">
+            <option value="">-- Select a Student --</option>
+            @foreach (var student in ViewBag.NonParticipants)
+            {
+                <option value="@student.StudentId">@student.Name</option>  
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Participant</button>
+</form>
+
+<p><a href="@Url.Action("ViewParticipants", "Activity", new { activityId = ViewBag.Activity.ActivityId })">Back to Participants</a></p>

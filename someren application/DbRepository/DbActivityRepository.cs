@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using someren_application.Models;
+using someren_application.Repositories;
 using System.Data;
 using System.Diagnostics;
 
-namespace someren_application.Repositories
+namespace someren_application.DbRepository
 {
     public class DbActivityRepository : IActivityRepository
     {
@@ -13,9 +14,9 @@ namespace someren_application.Repositories
         {
             _connectionString = configuration.GetConnectionString("SomerenConnection");
         }
-        List<Activities> IActivityRepository.GetAll()
+        List<ActivitiesModel> IActivityRepository.GetAll()
         {
-            List<Activities> activities = [];
+            List<ActivitiesModel> activities = [];
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string query = "SELECT [activityId], [activityName], [timeSlot] FROM [activity] ORDER BY activityName";
@@ -27,7 +28,7 @@ namespace someren_application.Repositories
                     {
                         while (reader.Read())
                         {
-                            Activities activity = ReadUser(reader);
+                            ActivitiesModel activity = ReadActivity(reader);
                             activities.Add(activity);
                         }
                     }
@@ -47,17 +48,17 @@ namespace someren_application.Repositories
             return activities;
         }
 
-        private Activities ReadUser(SqlDataReader reader)
+        private ActivitiesModel ReadActivity(SqlDataReader reader)
         {
             // Retrieve data from room table
             int activityId = (int)reader["activityId"];
             string activityName = (string)reader["activityName"];
             DateTime timeSlot = (DateTime)reader["timeSlot"];
             // Return new User object
-            return new Activities(activityId, activityName, timeSlot);
+            return new ActivitiesModel(activityId, activityName, timeSlot);
         }
 
-        Activities? IActivityRepository.GetById(int activityId)
+        ActivitiesModel? IActivityRepository.GetById(int activityId)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -70,7 +71,7 @@ namespace someren_application.Repositories
                 {
                     if (reader.Read()) // If a record is found
                     {
-                        return new Activities(
+                        return new ActivitiesModel(
                             (int)reader["activityId"],
                             (string)reader["activityName"],
                             (DateTime)reader["timeSlot"]
@@ -80,7 +81,7 @@ namespace someren_application.Repositories
             }
             return null; // Return null if no room is found
         }
-        void IActivityRepository.Add(Activities activity)
+        void IActivityRepository.Add(ActivitiesModel activity)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -100,7 +101,7 @@ namespace someren_application.Repositories
 
                         if (nrOfRowsAffected != 1)
                         {
-                            throw new Exception("Adding user failed!");
+                            throw new Exception("Adding activity failed!");
                         }
                     }
                     catch (Exception ex)
@@ -111,12 +112,13 @@ namespace someren_application.Repositories
             }
         }
 
-        void IActivityRepository.Update(Activities activity)
+        void IActivityRepository.Update(ActivitiesModel activity)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE [activity] SET activityName = @ActivityName, timeSlot = @TimeSlot WHERE activityId = @ActivityId";
+                string query = "UPDATE [activity] SET activityName = @ActivityName, timeSlot = @TimeSlot WHERE [activityId] = @ActivityId";
                 SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ActivityId", activity.ActivityId);
                 command.Parameters.AddWithValue("@ActivityName", activity.ActivityName); //  prevent SQL injection to occur by using SQL parameters
                 command.Parameters.AddWithValue("@TimeSlot", activity.TimeSlot);
                 try
@@ -132,11 +134,11 @@ namespace someren_application.Repositories
 
             }
         }
-        void IActivityRepository.Delete(Activities activity)
+        void IActivityRepository.Delete(ActivitiesModel activity)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM [room] WHERE roomId = @RoomId";
+                string query = "DELETE FROM [activity] WHERE activityId = @ActivityId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -152,5 +154,55 @@ namespace someren_application.Repositories
                 }
             }
         }
+        // need to add tables in the database
+        List<Students> IActivityRepository.GetParticipants(int activityId)
+        {
+            List<Students> students = new List<Students>();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT s.studentId, s.firstName, s.lastName FROM students s " +
+                               "JOIN activityParticipants ap ON s.studentId = ap.StudentId " +
+                               "WHERE ap.ActivityId = @ActivityId";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ActivityId", activityId);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int studentId = (int)reader["studentId"];
+                        string firstName = (string)reader["firstName"];
+                        string lastName = (string)reader["lastName"];
+                        students.Add(new Students(studentId, firstName, lastName));
+                    }
+                }
+            }
+            return students;
+        }
+        void IActivityRepository.AddParticipant(int activityId, int studentId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "INSERT INTO activityParticipants (activityId, studentId) VALUES (@ActivityId, @StudentId)";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ActivityId", activityId);
+                command.Parameters.AddWithValue("@StudentId", studentId);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+        public void RemoveParticipant(int activityId, int studentId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "DELETE FROM activityParticipants (activityId, studentId) VALUES (@ActivityId, @StudentId)";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@StudentId", studentId);
+                command.Parameters.AddWithValue("@ActivityId", activityId);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
 }

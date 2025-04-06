@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using someren_application.IRepositories;
 using someren_application.Models;
 using someren_application.Repositories;
 
@@ -10,12 +11,13 @@ namespace someren_application.Controllers
 
 
         private ILecturerRepository _lecturerRpository;
+        private readonly IRoomRepository _roomRepository;
 
-
-        public LecturerController(ILecturerRepository lecturerRpository)
+        public LecturerController(ILecturerRepository lecturerRpository, IRoomRepository roomRepository)
 
         {
-            _lecturerRpository = lecturerRpository; // ✅ Properly using the injected repository
+            _lecturerRpository = lecturerRpository; //Properly using the injected repository
+            _roomRepository = roomRepository;
         }
 
 
@@ -34,6 +36,8 @@ namespace someren_application.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            //return View();
+            ViewBag.Rooms = _roomRepository.GetAll();
             return View();
         }
 
@@ -51,8 +55,9 @@ namespace someren_application.Controllers
                 return RedirectToAction("Index");
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                ViewBag.Rooms = _roomRepository.GetAll();
                 return View(lecturer);
             }
 
@@ -89,7 +94,7 @@ namespace someren_application.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return View(lecturer);
             }
@@ -123,7 +128,7 @@ namespace someren_application.Controllers
                 //go back to user list(via Index)
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //something went wrong, go back to view with user
                 return View(lecturer);

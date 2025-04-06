@@ -21,6 +21,7 @@
                             <input type="number" id="Capacity" name="Capacity" required>
                             <button type="submit">Search</button>
                         </form>
+
                         <a asp-controller="Room" asp-action="Create" class="btn btn-primary mx-2 ">
                             ADD Room
                         </a>
@@ -30,7 +31,7 @@
         </thead>
         <tbody>
             @{
-                foreach (var room in Model) 
+                foreach (Room room in Model)
                 {
                     <tr>
                         <td>@room.RoomNumber</td>

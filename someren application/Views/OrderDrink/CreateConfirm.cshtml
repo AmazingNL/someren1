@@ -1,0 +1,46 @@
+﻿@model someren_application.Models.OrderDrinks
+
+@{
+    ViewData["Title"] = "Confirm Order";
+}
+<div class="container mt-5">
+    <div class="border p-5 shadow-lg rounded" style="min-height: 500px;">
+        <div class="row pb-4">
+            <h2 class="text-primary text-center">Confirm Order</h2>
+            <hr />
+        </div>
+
+        <div class="mb-4 row">
+            <div class="col-md-4">
+                <label asp-for="@Model.Students[0].StudentId" class="form-label">Student Details</label>
+                <p>@Model.Students[0].StudentNumber - @Model.Students[0].LastName, @Model.Students[0].FirstName</p>
+                <p>Room Number: @Model.Students[0].Rooms[0].RoomNumber</p>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="@Model.Drinks[0].DrinkId" class="form-label">Drink Details</label>
+                <p>@Model.Drinks[0].DrinkName</p>
+                <p>Alcoholic: @Model.Drinks[0].IsAlcoholic</p>
+                <p>VAT Rate: @Model.Drinks[0].VatRate%</p>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="TotalDrink" class="form-label">Total Drink</label>
+                <p>@Model.TotalDrink</p>
+            </div>
+        </div>
+        <form method="post" asp-controller="OrderDrink" asp-action="CreateConfirmed" onsubmit="return confirm('Are you sure you want to submit this order?');">
+            <div class="mb-4 row justify-content-center">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 hover-animate">Confirm Order</button>
+                </div>
+                <div class="col-md-3 mt-2 mt-md-0">
+                    <a asp-controller="OrderDrink" asp-action="Create" class="btn btn-outline-secondary w-100 hover-animate">
+                        Back to Create Order
+                    </a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+

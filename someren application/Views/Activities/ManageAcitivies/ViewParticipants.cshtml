@@ -1,0 +1,49 @@
+﻿
+
+<div>
+    <h3>Participants</h3>
+    @if (ViewBag.Participants != null && ViewBag.Participants.Count > 0)
+    {
+        <ul>
+            @foreach (var participant in ViewBag.Participants)
+            {
+                <li>@participant.Name</li>  <!-- Adjust based on your Student model -->
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No participants yet.</p>
+    }
+</div>
+
+<div>
+    <h3>Non-Participants</h3>
+    @if (ViewBag.NonParticipants != null && ViewBag.NonParticipants.Count > 0)
+    {
+        <ul>
+            @foreach (var nonParticipant in ViewBag.NonParticipants)
+            {
+                <li>@nonParticipant.Name</li>  <!-- Adjust based on your Student model -->
+            }
+        </ul>
+    }
+    else
+    {
+        <p>All students have joined.</p>
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.Confirmation))
+{
+    <div class="alert alert-success">
+        @ViewBag.Confirmation
+    </div>
+}
+
+<div>
+    <!-- Optional: Add buttons or links for actions like adding/removing participants -->
+    <a href="@Url.Action("AddParticipant", "Activity", new { id = ViewBag.Activity.ActivityId })" class="btn btn-primary">Add Participant</a>
+    <a href="@Url.Action("RemoveParticipant", "Activity", new { id = ViewBag.Activity.ActivityId })" class="btn btn-danger">Remove Participant</a>
+</div>
+

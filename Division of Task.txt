@@ -1,0 +1,6 @@
+Division of Tasks
+
+
+Mohammed Zaid 708467 : Created variant B(lecturers)
+Nokutenda Udinge 727573 : Created variant A(Students)
+Amazinggrace Iruoma 726138 : Prepared Visual Studio Solution & Created  variant C(Rooms) and D(activites)

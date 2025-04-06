@@ -1,0 +1,36 @@
+﻿@model someren_application.Models.Drinks
+
+@{
+    ViewData["Title"] = "Delete Drinks";
+}
+
+<div>
+    <h1>Delete Drinks</h1>
+
+    <div class="form-group py-2">
+        <label>Drink Name:</label>
+        <p>@Model.DrinkName</p> <!-- Display Drink Name -->
+    </div>
+    <div class="form-group py-2">
+        <label>Alcoholic / Non-Alcoholic:</label>
+        <p>@Model.IsAlcoholic</p> <!-- Display Alcoholic / Non-Alcoholic -->
+    </div>
+    <div class="form-group py-2">
+        <label>Vat Rate:</label>
+        <p>@Model.VatRate</p> <!-- Display Vat Rate -->
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <!-- Delete Confirmation Form with POST request -->
+            <form asp-controller="Drinks" asp-action="Delete" method="post">
+                <input type="hidden" asp-for="DrinkId" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Drinks" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                Back To Drinks
+            </a>
+        </div>
+    </div>
+</div>
